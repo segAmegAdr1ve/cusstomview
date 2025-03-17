@@ -1,6 +1,5 @@
 package com.example.cusstomview
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
 import com.example.cusstomview.helper.CalendarHelper
-import com.example.cusstomview.helper.DayOfWeek
 
 class CalendarRecyclerViewAdapter(
     //val calendar: Calendar,
