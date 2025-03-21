@@ -9,18 +9,25 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
+import com.example.cusstomview.helper.CalendarHelper
 import com.example.cusstomview.helper.Day
 import com.example.cusstomview.helper.Week
 import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 class CalendarRecyclerViewAdapter() :
     RecyclerView.Adapter<CalendarRecyclerViewAdapter.CalendarViewHolder>() {
     //ListAdapter<List<Day>, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback = diffCallback) {
 
-    var monthList: List<List<Day>> = emptyList()// = calendarHelper.makeMonth()
-    private var selectedView: View? = null
-    private var selectedTextView: TextView? = null
+    //var monthList: List<List<Day>> = emptyList()// = calendarHelper.makeMonth()
+    private var selectedView: DayItemBinding? = null
+
+    var monthList: List<LocalDate> = CalendarHelper().createListOfDaysFromToday()
+    private val today = LocalDate.now()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         return CalendarViewHolder(
@@ -33,21 +40,70 @@ class CalendarRecyclerViewAdapter() :
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.binding.bindWeek(monthList[position], {}) { newSelectedView: View, newTextView: TextView ->
+        /*holder.binding.bindWeek(monthList[position], {}) { newSelectedView: View, newTextView: TextView ->
             selectedView?.visibility = View.INVISIBLE
             selectedTextView?.setTextColor(Color.BLACK)
             newSelectedView.visibility = View.VISIBLE
             newTextView.setTextColor(Color.WHITE)
             selectedView = newSelectedView
             selectedTextView = newTextView
+        }*/
+        holder.bind(monthList, position, today) { dayItemView ->
+            selectedView?.let { view ->
+                view.selectedBackground.visibility = View.INVISIBLE
+                view.dayOfMonth.setTextColor(Color.BLACK)
+            }
+            dayItemView.selectedBackground.visibility = View.VISIBLE
+            dayItemView.dayOfMonth.setTextColor(Color.WHITE)
+            selectedView = dayItemView
         }
     }
 
-    override fun getItemCount() = monthList.size
+    override fun getItemCount() = monthList.size / 7//monthList.size
+
+    fun removeSelectionAndViewReference() {
+        selectedView?.let { view ->
+            view.selectedBackground.visibility = View.INVISIBLE
+            view.dayOfMonth.setTextColor(Color.BLACK)
+        }
+        selectedView = null
+    }
 
     class CalendarViewHolder(val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
+        fun bind(
+            itemList: List<LocalDate>,
+            weekNumber: Int,
+            today: LocalDate,
+            onSelectionChanged: (selectedView: DayItemBinding) -> Unit
+        ) {
+            val indexExtra = weekNumber * 7
+            bindDay(binding.mondayItem, itemList[0 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.tuesdayItem, itemList[1 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.wednesdayItem, itemList[2 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.thursdayItem, itemList[3 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.fridayItem, itemList[4 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.saturdayItem, itemList[5 + indexExtra], today, onSelectionChanged)
+            bindDay(binding.sundayItem, itemList[6 + indexExtra], today, onSelectionChanged)
+        }
 
+        private fun bindDay(
+            dayBinding: DayItemBinding,
+            day: LocalDate,
+            today: LocalDate,
+            onSelectionChanged: (selectedView: DayItemBinding) -> Unit,
+        ) {
+            dayBinding.dayOfMonth.text = day.dayOfMonth.toString()
+            dayBinding.dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru"))
+            dayBinding.currentDay.isVisible = day.isEqual(today)
+            dayBinding.dayLayout.setOnClickListener {
+                onSelectionChanged(dayBinding)
+            }
+        }
+
+        /*enum class WeekViewDisposableCoroutine(view: DayItemBinding) {
+            MONDAY()
+        }*/
     }
 
     companion object {
@@ -98,8 +154,8 @@ fun RecyclerViewCalendarItemBinding.bindWeek(
                     //TODO() -> ADD onDayClicked callback and pass arguments to it
                 }
 
-               /* if (dayOfWeek.isCurrentDay) tuesdayItem.dayOfMonth.setTextColor(Color.RED)
-                else tuesdayItem.dayOfMonth.setTextColor(Color.BLACK)*/
+                /* if (dayOfWeek.isCurrentDay) tuesdayItem.dayOfMonth.setTextColor(Color.RED)
+                 else tuesdayItem.dayOfMonth.setTextColor(Color.BLACK)*/
             }
 
             DayOfWeek.WEDNESDAY -> {

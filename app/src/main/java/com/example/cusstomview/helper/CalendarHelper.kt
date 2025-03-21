@@ -1,18 +1,49 @@
 package com.example.cusstomview.helper
 
+import android.util.Log
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.TextStyle
+import java.time.temporal.TemporalAdjuster
 import java.util.Locale
 
 typealias Week = List<Day>
+
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
-    var selectedMonth: Month = today.month
+    var selectedDate: LocalDate = today
+
+    fun createListOfDaysFromToday(): List<LocalDate> {
+        val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(2)
+        return createListOfDays(startDate, 5)
+    }
+
+    fun createListForMonth(month: Month): List<LocalDate> {
+        val firstDayOfSelectedMonth = today.withMonth(month.value).withDayOfMonth(1)
+        val startDate = if (firstDayOfSelectedMonth.dayOfWeek != DayOfWeek.MONDAY) {
+            firstDayOfSelectedMonth.with(DayOfWeek.MONDAY)//minusWeeks(1).with(DayOfWeek.MONDAY)
+        } else firstDayOfSelectedMonth
+
+        val resultList = createListOfDays(startDate, 5).toMutableList()
+        val lastItem = resultList.last()
+        if (lastItem.dayOfMonth < lastItem.month.maxLength() && lastItem.month == firstDayOfSelectedMonth.month) {
+            resultList += createListOfDays(lastItem, 1)
+        }
+        return resultList
+    }
+
+    private fun createListOfDays(startDate: LocalDate, weekNumber: Int): List<LocalDate> {
+        return buildList<LocalDate> {
+            repeat(weekNumber * 7) { dayNumber ->
+                add(startDate.plusDays(dayNumber.toLong()))
+            }
+        }
+    }
 
     fun makeMonth(): List<Week> {
         val resultList = mutableListOf<Week>()
-        var firstDayOfMonth = today.withMonth(selectedMonth.value).withDayOfMonth(1)
+        var firstDayOfMonth = today.withMonth(selectedDate.month.value).withDayOfMonth(1)
 
         while (firstDayOfMonth.dayOfWeek != java.time.DayOfWeek.MONDAY) {
             firstDayOfMonth = firstDayOfMonth.minusDays(1)
@@ -22,7 +53,7 @@ class CalendarHelper {
                 makeWeek(since = firstDayOfMonth, today = today)
             )
             firstDayOfMonth = firstDayOfMonth.plusWeeks(1)
-        } while (firstDayOfMonth.month == selectedMonth)
+        } while (firstDayOfMonth.month == selectedDate.month)
 
         return resultList
     }

@@ -23,12 +23,13 @@ import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private var _binding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding by lazy { _binding!! }
     private val viewModel: CalendarViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
 
         setupSpinner()
         setupAdapter()
@@ -53,17 +54,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            //repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.scrollEvent.collect { index ->
-                if (!viewModel.scrolled) {
-                    binding.recyclerView.scrollToPosition(index)
-                    viewModel.scrolled = true
-                }
-            }
-            //}
-        }
-
+        binding.recyclerView.scrollToPosition(2)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
@@ -80,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             monthList
         )
         binding.monthSpinner.adapter = spAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedMonth.value - 1)
+        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
 
         binding.monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -111,8 +102,14 @@ class MainActivity : AppCompatActivity() {
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
             viewModel.onSelectedMonthChanged(Month.of(position + 1))
+            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelectionAndViewReference()
             alertDialog.dismiss()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     /*private fun setupSpinner() {
