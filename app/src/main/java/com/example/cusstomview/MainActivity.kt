@@ -15,8 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.cusstomview.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
@@ -45,6 +47,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupAdapter() {
         val rvAdapter = CalendarRecyclerViewAdapter()
         binding.recyclerView.adapter = rvAdapter
+        rvAdapter.onSelectedDateChanged = { date: LocalDate ->
+            binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
+        }
 
         lifecycleScope.launch {
             //repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -94,7 +99,6 @@ class MainActivity : AppCompatActivity() {
             val layoutParams = WindowManager.LayoutParams()
             layoutParams.copyFrom(window.attributes)
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
-            Log.d("tag", layoutParams.height.toString())
             layoutParams.height = 1000
             window.attributes = layoutParams
         }
@@ -112,34 +116,4 @@ class MainActivity : AppCompatActivity() {
         _binding = null
     }
 
-    /*private fun setupSpinner() {
-        val locale = Locale.forLanguageTag("ru")
-        val monthList = Month.entries.map { month ->
-            month.getDisplayName(TextStyle.SHORT, locale)
-        }
-        val spAdapter = ArrayAdapter(
-            this,
-            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-            monthList
-        )
-        binding.monthSpinner.adapter = spAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedMonth.value - 1)
-        binding.monthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                viewModel.onSelectedMonthChanged(
-                    Month.of(position + 1)
-                )
-                Log.d("TAG", "onItemSelected: ")
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-        }
-    }*/
 }
