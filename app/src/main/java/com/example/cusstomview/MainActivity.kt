@@ -1,13 +1,13 @@
 package com.example.cusstomview
 
+import android.R.layout.simple_list_item_1
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
-import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         _binding = ActivityMainBinding.inflate(layoutInflater)
 
-        setupSpinner()
+        setupMonthPicker()
         setupAdapter()
 
         setContentView(binding.root)
@@ -45,17 +45,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAdapter() {
-        val rvAdapter = CalendarRecyclerViewAdapter()
-        binding.recyclerView.adapter = rvAdapter
-        rvAdapter.onSelectedDateChanged = { date: LocalDate ->
+        val calendarAdapter = CalendarRecyclerViewAdapter()
+        binding.recyclerView.adapter = calendarAdapter
+        calendarAdapter.onSelectedDateChanged = { date: LocalDate ->
             binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
         }
 
         lifecycleScope.launch {
-            //repeatOnLifecycle(Lifecycle.State.CREATED) {
             viewModel.currentMonth.collect { monthList ->
-                rvAdapter.monthList = monthList
-                rvAdapter.notifyDataSetChanged()
+                calendarAdapter.monthList = monthList
+                calendarAdapter.notifyDataSetChanged()
             }
         }
 
@@ -64,49 +63,41 @@ class MainActivity : AppCompatActivity() {
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
 
-    private fun setupSpinner() {
-        val locale = Locale.forLanguageTag("ru")
+    private fun setupMonthPicker() {
+        val locale = Locale.getDefault()
         val monthList = Month.entries.map { month ->
             month.getDisplayName(TextStyle.SHORT, locale)
         }
 
-        val spAdapter = ArrayAdapter(
+        val monthPickerAdapter = ArrayAdapter(
             this,
-            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
+            support_simple_spinner_dropdown_item,
             monthList
         )
-        binding.monthSpinner.adapter = spAdapter
+        binding.monthSpinner.adapter = monthPickerAdapter
         binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
 
         binding.monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                showCustomSpinnerDialog(monthList)
+                showMonthPickerDialog(monthList)
             }
             true
         }
     }
 
-    private fun showCustomSpinnerDialog(monthList: List<String>) {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, monthList)
+    private fun showMonthPickerDialog(monthList: List<String>) {
+        val adapter = ArrayAdapter(this, simple_list_item_1, monthList)
         val listView = ListView(this)
         listView.adapter = adapter
         val alertDialog = MaterialAlertDialogBuilder(this)
-            .setTitle("Выберите месяц")
+            .setTitle(getString(R.string.month_picker_title))
             .setView(listView)
             .show()
-
-        alertDialog.window?.let { window ->
-            val layoutParams = WindowManager.LayoutParams()
-            layoutParams.copyFrom(window.attributes)
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
-            layoutParams.height = 1000
-            window.attributes = layoutParams
-        }
 
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
             viewModel.onSelectedMonthChanged(Month.of(position + 1))
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelectionAndViewReference()
+            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelectedDayItem()
             alertDialog.dismiss()
         }
     }

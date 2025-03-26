@@ -19,9 +19,9 @@ class CalendarViewModel : ViewModel() {
 
     fun onSelectedMonthChanged(selectedMonth: Month) {
         viewModelScope.launch(Dispatchers.Default) {
-            _currentMonth.update {
+            _currentMonth.emit(
                 calendarHelper.createListForMonth(month = selectedMonth)
-            }
+            )
         }
     }
 

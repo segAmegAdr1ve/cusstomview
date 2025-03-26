@@ -3,4 +3,7 @@
     <dimen name="timeline_text_size">14sp</dimen>
     <dimen name="current_date_text_size">20sp</dimen>
     <dimen name="current_day_of_month_text_size">16sp</dimen>
+    <dimen name="match_constraints">0dp</dimen>
+    <dimen name="recycler_view_vertical_padding">4dp</dimen>
+    <dimen name="current_day_marker_bottom_margin">4dp</dimen>
 </resources>
