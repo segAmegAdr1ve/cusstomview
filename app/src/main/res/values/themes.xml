@@ -2,9 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Cusstomview" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/custom_blue</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">monospace</item>
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.Cusstomview" parent="Base.Theme.Cusstomview" />
+    <!--<style name="TextViewStyle" >
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">monospace</item>
+    </style>-->
 </resources>
