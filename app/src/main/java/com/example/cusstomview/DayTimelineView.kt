@@ -5,13 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PointF
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import java.time.LocalDateTime
-import java.time.format.TextStyle
 import java.util.Locale
 
 const val TIMELINE_START = 0
@@ -23,64 +20,32 @@ class DayTimelineView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    // высота периода в 1 час
-    private val spaceBetweenHorizontalSeparators =
-        150f //TODO -> 100f и поправить отрисовки при 100f
-    private val paddingVertical = 150
+    private val spaceBetweenHorizontalSeparators = 100f
+    private val paddingVertical = 0
     private val verticalLineOffset = 130f
     private val lineCount = 24
-    private val dateCircleCenter =
-        PointF(verticalLineOffset / 2f, spaceBetweenHorizontalSeparators / 2)
-    private val dateCircleRadius = 40f
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
     private val timeFormatPattern = "%02d:00"
     private val locale = Locale("ru")
-
-    /** LocalDateTime.now by default*/
-    var selectedDateTime: LocalDateTime = LocalDateTime.now()
+    
+    private val today: LocalDateTime = LocalDateTime.now()
+    var selectedDateTime: LocalDateTime = today
         set(value) {
             field = value
             currentDayOfMonth = selectedDateTime.dayOfMonth
-            currentDayOfWeek = selectedDateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             invalidate()
         }
+    private val isCurrentDay
+        get() = today.toLocalDate() == selectedDateTime.toLocalDate()
     private val currentTimeLineOffset = calculateCurrentTimeLineOffset()
     private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
-    private var currentDayOfWeek =
-        selectedDateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
-
-    private val currentDayOfWeekTextPaint = Paint().apply {
-        color = resources.getColor(R.color.distantly_blue, context.theme)
-        typeface = Typeface.MONOSPACE
-        textSize = resources.getDimension(R.dimen.current_day_of_month_text_size)
-        textAlign = Paint.Align.CENTER
-    }
-
-    private val currentDateTextPaint = Paint().apply {
-        color = Color.WHITE
-        typeface = Typeface.MONOSPACE
-        textSize = resources.getDimension(R.dimen.current_date_text_size)
-        textAlign = Paint.Align.CENTER
-    }
-    private val textBounds = Rect().apply {
-        currentDateTextPaint.getTextBounds(currentDayOfWeek, 0, currentDayOfWeek.length, this)
-    }
-    private val textHeight = textBounds.height()
-
-    private val circlePaint = Paint().apply {
-        color = resources.getColor(R.color.distantly_blue, context.theme)
-        style = Paint.Style.FILL
-    }
-
-    private val headerBackgroundPaint = Paint().apply {
-        color = resources.getColor(R.color.light_grey_blue, context.theme)
-        style = Paint.Style.FILL
-    }
 
     private val separatorPaint = Paint().apply {
-        color =
-            resources.getColor(com.google.android.material.R.color.material_grey_300, context.theme)
+        color = resources.getColor(
+            com.google.android.material.R.color.material_grey_300,
+            context.theme
+        )
         style = Paint.Style.STROKE
         strokeWidth = 1f
     }
@@ -112,22 +77,7 @@ class DayTimelineView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawRect(0f, 0f, width * 1f, spaceBetweenHorizontalSeparators, headerBackgroundPaint)
-        canvas.drawCircle(dateCircleCenter.x, dateCircleCenter.y, dateCircleRadius, circlePaint)
-        canvas.drawText(
-            currentDayOfMonth.toString(),
-            dateCircleCenter.x,
-            dateCircleCenter.y + textHeight / 1.5f,
-            currentDateTextPaint
-        )
-        canvas.drawText(
-            currentDayOfWeek,
-            dateCircleCenter.x,
-            dateCircleCenter.y - dateCircleRadius - 5,
-            currentDayOfWeekTextPaint
-        )
-
-        for (index in 1..<lineCount) {
+        for (index in 0..<lineCount) {
             linePath.moveTo(
                 verticalLineOffset - 15,
                 (spaceBetweenHorizontalSeparators * index) + paddingVertical
@@ -155,14 +105,17 @@ class DayTimelineView @JvmOverloads constructor(
             totalHeight + paddingVertical,
             separatorPaint
         )
-        canvas.drawLine(
-            verticalLineOffset,
-            currentTimeLineOffset,
-            width * 1f,
-            currentTimeLineOffset,
-            currentTimePaint
-        )
-        canvas.drawCircle(verticalLineOffset, currentTimeLineOffset, 10f, currentTimePaint)
+
+        if (isCurrentDay) {
+            canvas.drawLine(
+                verticalLineOffset,
+                currentTimeLineOffset,
+                width * 1f,
+                currentTimeLineOffset,
+                currentTimePaint
+            )
+            canvas.drawCircle(verticalLineOffset, currentTimeLineOffset, 10f, currentTimePaint)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -173,7 +126,6 @@ class DayTimelineView @JvmOverloads constructor(
 
     private fun calculateCurrentTimeLineOffset(): Float {
         var result: Float = 0f
-        result += spaceBetweenHorizontalSeparators // header
         result += selectedDateTime.hour * spaceBetweenHorizontalSeparators
         result += spaceBetweenHorizontalSeparators * selectedDateTime.minute / 60
         return result

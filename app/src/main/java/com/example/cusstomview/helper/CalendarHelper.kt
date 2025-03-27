@@ -7,6 +7,7 @@ import java.time.Month
 private const val DEFAULT_WEEK_NUMBER = 5
 private const val EXTRA_WEEK_NUMBER = 1
 const val DAYS_IN_WEEK_NUMBER = 7
+
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
     var selectedDate: LocalDate = today

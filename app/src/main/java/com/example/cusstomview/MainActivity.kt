@@ -23,6 +23,7 @@ import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
 
+private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
@@ -97,9 +98,23 @@ class MainActivity : AppCompatActivity() {
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
             viewModel.onSelectedMonthChanged(Month.of(position + 1))
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelectedDayItem()
+            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
             alertDialog.dismiss()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(
+            SELECTED_DATE_LIST_POSITION,
+            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).selectedDateListPosition
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).selectedDateListPosition =
+            savedInstanceState.getInt(SELECTED_DATE_LIST_POSITION)
     }
 
     override fun onDestroy() {

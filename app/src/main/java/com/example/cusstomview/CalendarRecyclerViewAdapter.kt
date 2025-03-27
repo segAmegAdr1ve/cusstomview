@@ -1,6 +1,5 @@
 package com.example.cusstomview
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,14 +15,20 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
+private const val NO_SELECTION = -1
+
 class CalendarRecyclerViewAdapter() :
     RecyclerView.Adapter<CalendarRecyclerViewAdapter.CalendarViewHolder>() {
 
-    private var selectedDayView: DayItemBinding? = null
     var onSelectedDateChanged: (date: LocalDate) -> Unit = {}
     var monthList: List<LocalDate> = CalendarHelper().createListOfDaysFromToday()
 
     private val today = LocalDate.now()
+    var selectedDateListPosition = monthList.indexOf(today)
+
+    fun removeSelection() {
+        selectedDateListPosition = NO_SELECTION
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         return CalendarViewHolder(
@@ -36,39 +41,22 @@ class CalendarRecyclerViewAdapter() :
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(position) { dayItemView ->
-            selectedDayView?.let { view ->
-                view.selectedBackground.visibility = View.INVISIBLE
-                view.dayOfMonth.setTextColor(Color.BLACK)
-            }
-            dayItemView.selectedBackground.visibility = View.VISIBLE
-            dayItemView.dayOfMonth.setTextColor(Color.WHITE)
-            selectedDayView = dayItemView
-        }
+        holder.bind(position)
     }
 
     override fun getItemCount() = monthList.size / DAYS_IN_WEEK_NUMBER
-
-    fun removeSelectedDayItem() {
-        selectedDayView?.let { view ->
-            view.selectedBackground.visibility = View.INVISIBLE
-            view.dayOfMonth.setTextColor(Color.BLACK)
-        }
-        selectedDayView = null
-    }
 
     inner class CalendarViewHolder(val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
         fun bind(
             weekNumber: Int,
-            onSelectionChanged: (selectedView: DayItemBinding) -> Unit
         ) {
             val indexExtra = weekNumber * DAYS_IN_WEEK_NUMBER
             binding.weekLayout.children.forEachIndexed { index, dayItem ->
                 bindDay(
                     DayItemBinding.bind(dayItem),
                     monthList[index + indexExtra],
-                    onSelectionChanged
+                    index + indexExtra
                 )
             }
         }
@@ -76,14 +64,27 @@ class CalendarRecyclerViewAdapter() :
         private fun bindDay(
             dayBinding: DayItemBinding,
             day: LocalDate,
-            onSelectionChanged: (selectedView: DayItemBinding) -> Unit,
+            itemIndex: Int
         ) {
             dayBinding.dayOfMonth.text = day.dayOfMonth.toString()
             dayBinding.dayOfWeek.text =
                 day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             dayBinding.currentDayMarker.isVisible = day.isEqual(today)
+            if (itemIndex == selectedDateListPosition) {
+                dayBinding.selectedBackground.visibility = View.VISIBLE
+                dayBinding.dayOfMonth.isSelected = true
+            } else {
+                dayBinding.selectedBackground.visibility = View.INVISIBLE
+                dayBinding.dayOfMonth.isSelected = false
+            }
             dayBinding.dayLayout.setOnClickListener {
-                onSelectionChanged(dayBinding)
+                val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK_NUMBER
+                val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK_NUMBER
+                selectedDateListPosition = itemIndex
+                notifyItemChanged(newSelectedAdapterPosition)
+                if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
+                    notifyItemChanged(oldSelectedAdapterPosition)
+                }
                 onSelectedDateChanged(day)
             }
         }
