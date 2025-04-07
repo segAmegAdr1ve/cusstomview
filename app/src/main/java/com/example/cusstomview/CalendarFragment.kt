@@ -2,6 +2,7 @@ package com.example.cusstomview
 
 import android.R.layout.simple_list_item_1
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.cusstomview.databinding.FragmentCalendarBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -43,6 +47,12 @@ class CalendarFragment : Fragment() {
         setupAdapter(savedInstanceState)
 
         setupMonthPicker()
+        val dialog = DatePickerBottomSheetFragment()
+        dialog.show(childFragmentManager, "tag")
+        /*lifecycleScope.launch(Dispatchers.Main) {
+            delay(4000)
+            dialog.dismiss()
+        }*/
 
     }
 
@@ -58,7 +68,8 @@ class CalendarFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                calendarAdapter.monthList = monthList
+                Log.d("changed", "changed")
+                //calendarAdapter.monthList = monthList
                 calendarAdapter.notifyDataSetChanged()
             }
         }
@@ -80,7 +91,13 @@ class CalendarFragment : Fragment() {
             monthList
         )
         binding.monthSpinner.adapter = monthPickerAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
+        lifecycleScope.launch {
+            viewModel.selectedDate.collect { date ->
+                binding.monthSpinner.setSelection(date.month.value - 1)
+            }
+        }
+
+        //binding.monthSpinner.setSelection(viewModel.selectedDate.month.value - 1)
 
         binding.monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -101,7 +118,7 @@ class CalendarFragment : Fragment() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
-            viewModel.onSelectedMonthChanged(Month.of(position + 1))
+            //viewModel.onSelectedMonthChanged(Month.of(position + 1))
             (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
             alertDialog.dismiss()
         }

@@ -13,20 +13,41 @@ import java.time.Month
 
 class CalendarViewModel : ViewModel() {
     val calendarHelper = CalendarHelper()
+    //var selectedDate: LocalDate = LocalDate.now()
+    private val _selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
+    var selectedDate = _selectedDate.asStateFlow()
 
     private val _currentMonth: MutableStateFlow<List<LocalDate>> = MutableStateFlow(fetchCurrentMonthList())
     val currentMonth = _currentMonth.asStateFlow()
 
-    fun onSelectedMonthChanged(selectedMonth: Month) {
-        viewModelScope.launch(Dispatchers.Default) {
+    /*private val _currentDate: MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
+    val currentDate = _currentDate.asStateFlow()*/
+
+    fun onSelectedDateChanged(newDate: LocalDate) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedDate.emit(newDate)
             _currentMonth.emit(
-                calendarHelper.createListForMonth(month = selectedMonth)
+                calendarHelper.createListForMonth(newDate.month)
             )
+        }
+    }
+
+    fun setSelectedDate(newDate: LocalDate) {
+        viewModelScope.launch(Dispatchers.Default) {
+            _selectedDate.emit(newDate)
+        }
+    }
+
+    //удалить
+    fun setSelectedMonth(month: Month) {
+        _selectedDate.update { date ->
+            date.withMonth(month.value)
         }
     }
 
     private fun fetchCurrentMonthList(): List<LocalDate> {
         return calendarHelper.createListOfDaysFromToday()
     }
+
 
 }

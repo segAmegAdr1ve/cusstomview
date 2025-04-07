@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import java.time.LocalDateTime
+import java.time.Month
 import java.util.Locale
 
 const val TIMELINE_START = 0
@@ -21,7 +22,7 @@ class DayTimelineView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val spaceBetweenHorizontalSeparators = 100f
-    private val paddingVertical = 0
+    private val paddingVertical = 15
     private val verticalLineOffset = 130f
     private val lineCount = 24
     private val totalHeight
@@ -57,7 +58,7 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLACK
+        color = resources.getColor(R.color.text_no_selection)//Color.BLACK
         typeface = Typeface.MONOSPACE
         textSize = resources.getDimension(R.dimen.timeline_text_size)
         textAlign = Paint.Align.CENTER
@@ -89,7 +90,7 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawPath(linePath, separatorPaint)
         }
 
-        for (index in 1..<lineCount) {
+        for (index in 0..<lineCount) {
             canvas.drawText(
                 timeList[index],
                 verticalLineOffset / 2,

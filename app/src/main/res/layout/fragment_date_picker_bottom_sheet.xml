@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/medium_extra_space"
+    tools:context=".DatePickerBottomSheetFragment">
+
+    <!--<TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />-->
+    <!--<com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:flow_horizontalAlign="center"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:flow_wrapMode="chain"
+        app:flow_verticalGap="60dp"
+        app:chipSpacingVertical="50dp" />-->
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/drag_handle_top_extra_space"
+        android:src="@drawable/drag_handle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/selected_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        tools:text="Август"
+        app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward" />
+
+    <TextView
+        android:id="@+id/selected_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/small_extra_space"
+        app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
+        app:layout_constraintStart_toEndOf="@id/selected_month"
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward"
+        tools:text="2025" />
+
+    <ImageButton
+        android:id="@+id/arrow_forward"
+        android:layout_width="@dimen/change_year_arrow_box"
+        android:layout_height="@dimen/change_year_arrow_box"
+        android:layout_marginTop="@dimen/change_year_arrow_vertical_extra_space"
+        android:layout_marginEnd="@dimen/change_year_arrow_right_extra_space"
+        android:backgroundTint="@color/m3_ref_palette_neutral96"
+        android:src="@drawable/baseline_arrow_forward_ios_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/arrow_back"
+        android:layout_width="@dimen/change_year_arrow_box"
+        android:layout_height="@dimen/change_year_arrow_box"
+        android:backgroundTint="@color/m3_ref_palette_neutral96"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
+        app:layout_constraintEnd_toStartOf="@id/arrow_forward"
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/custom_flow"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_extra_space"
+        app:flow_horizontalAlign="start"
+        app:flow_horizontalGap="@dimen/horizontal_flow_gap"
+        app:flow_horizontalStyle="packed"
+        app:flow_maxElementsWrap="4"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/arrow_forward" />
+
+    <Button
+        android:id="@+id/select"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_extra_space"
+        android:layout_marginTop="@dimen/drag_handle_top_extra_space"
+        android:backgroundTint="@color/distantly_blue"
+        android:text="@string/select_button_text"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/custom_flow" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

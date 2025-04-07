@@ -6,4 +6,11 @@
     <dimen name="match_constraints">0dp</dimen>
     <dimen name="recycler_view_vertical_padding">4dp</dimen>
     <dimen name="current_day_marker_bottom_margin">4dp</dimen>
+    <dimen name="change_year_arrow_box">48dp</dimen>
+    <dimen name="change_year_arrow_vertical_extra_space">36dp</dimen>
+    <dimen name="change_year_arrow_right_extra_space">32dp</dimen>
+    <dimen name="drag_handle_top_extra_space">16dp</dimen>
+    <dimen name="medium_extra_space">32dp</dimen>
+    <dimen name="horizontal_flow_gap">25dp</dimen>
+    <dimen name="small_extra_space">8dp</dimen>
 </resources>

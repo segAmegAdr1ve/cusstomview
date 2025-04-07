@@ -1,5 +1,8 @@
 package com.example.cusstomview.helper
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.internal.synchronized
+import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
@@ -10,7 +13,6 @@ const val DAYS_IN_WEEK_NUMBER = 7
 
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
-    var selectedDate: LocalDate = today
 
     fun createListOfDaysFromToday(): List<LocalDate> {
         val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(2)
@@ -40,3 +42,20 @@ class CalendarHelper {
     }
 
 }
+
+/*fun main() {
+    repeat(2) {
+        runBlocking {
+            a()
+        }
+    }
+}
+
+
+suspend fun a() {
+    synch {
+        println(1)
+        delay(3L)
+        println(2)
+    }
+}*/

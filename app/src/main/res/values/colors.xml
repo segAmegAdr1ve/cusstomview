@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="day_selected">@color/white</color>
+    <color name="text_no_selection">@color/black</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="custom_blue">#4864F3</color>
     <color name="distantly_blue">#49678D</color>
+    <color name="distantly_blue_2">#6A91C3</color>
     <color name="light_grey_blue">#EBEBF5</color>
 </resources>

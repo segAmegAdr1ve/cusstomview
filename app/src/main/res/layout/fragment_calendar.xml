@@ -24,7 +24,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/month_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/month_spinner"
+        tools:listitem="@layout/recycler_view_calendar_item" />
 
     <ScrollView
         android:layout_width="@dimen/match_constraints"
