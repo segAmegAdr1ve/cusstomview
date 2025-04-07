@@ -11,8 +11,6 @@ import android.view.View
 import java.time.LocalDateTime
 import java.util.Locale
 
-const val TIMELINE_START = 0
-const val TIMELINE_END = 23
 
 class DayTimelineView @JvmOverloads constructor(
     context: Context,
@@ -21,14 +19,12 @@ class DayTimelineView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val spaceBetweenHorizontalSeparators = 100f
-    private val paddingVertical = 0
     private val verticalLineOffset = 130f
     private val lineCount = 24
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
-    private val timeFormatPattern = "%02d:00"
-    private val locale = Locale("ru")
-    
+    private val locale = Locale.getDefault()
+
     private val today: LocalDateTime = LocalDateTime.now()
     var selectedDateTime: LocalDateTime = today
         set(value) {
@@ -59,19 +55,19 @@ class DayTimelineView @JvmOverloads constructor(
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
         typeface = Typeface.MONOSPACE
-        textSize = resources.getDimension(R.dimen.timeline_text_size)
+        textSize = resources.getDimension(R.dimen.medium_text_size)
         textAlign = Paint.Align.CENTER
     }
 
     private val linePath = Path().apply {
         repeat(lineCount) {
-            this.moveTo(0f, spaceBetweenHorizontalSeparators * it)
+            this.moveTo(ZERO_POSITION_F, spaceBetweenHorizontalSeparators * it)
             this.lineTo(width * 1f, spaceBetweenHorizontalSeparators * it)
         }
     }
 
     private val timeList = (TIMELINE_START..TIMELINE_END).map {
-        String.format(locale, timeFormatPattern, it)
+        String.format(locale, TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -80,11 +76,11 @@ class DayTimelineView @JvmOverloads constructor(
         for (index in 0..<lineCount) {
             linePath.moveTo(
                 verticalLineOffset - 15,
-                (spaceBetweenHorizontalSeparators * index) + paddingVertical
+                (spaceBetweenHorizontalSeparators * index)
             )
             linePath.lineTo(
                 width * 1f,
-                (spaceBetweenHorizontalSeparators * index) + paddingVertical
+                (spaceBetweenHorizontalSeparators * index)
             )
             canvas.drawPath(linePath, separatorPaint)
         }
@@ -93,16 +89,16 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawText(
                 timeList[index],
                 verticalLineOffset / 2,
-                (spaceBetweenHorizontalSeparators * index) + 10 + paddingVertical,
+                (spaceBetweenHorizontalSeparators * index) + 10,
                 timePeriodPaint
             )
         }
 
         canvas.drawLine(
             verticalLineOffset,
-            0f,
+            ZERO_POSITION_F,
             verticalLineOffset,
-            totalHeight + paddingVertical,
+            totalHeight,
             separatorPaint
         )
 
@@ -120,15 +116,21 @@ class DayTimelineView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
-        val height = (lineCount * spaceBetweenHorizontalSeparators) + paddingVertical
+        val height = (lineCount * spaceBetweenHorizontalSeparators)
         setMeasuredDimension(width, height.toInt())
     }
 
     private fun calculateCurrentTimeLineOffset(): Float {
-        var result: Float = 0f
+        var result = ZERO_POSITION_F
         result += selectedDateTime.hour * spaceBetweenHorizontalSeparators
-        result += spaceBetweenHorizontalSeparators * selectedDateTime.minute / 60
+        result += spaceBetweenHorizontalSeparators * selectedDateTime.minute / MINUTE_IN_HOUR
         return result
     }
 
+    companion object {
+        const val TIMELINE_START = 0
+        const val TIMELINE_END = 23
+        const val MINUTE_IN_HOUR = 60
+        const val ZERO_POSITION_F = 0f
+    }
 }

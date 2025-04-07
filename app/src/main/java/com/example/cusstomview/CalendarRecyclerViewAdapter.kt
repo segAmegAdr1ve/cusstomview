@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
 import com.example.cusstomview.helper.CalendarHelper
-import com.example.cusstomview.helper.DAYS_IN_WEEK_NUMBER
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
@@ -44,14 +43,14 @@ class CalendarRecyclerViewAdapter() :
         holder.bind(position)
     }
 
-    override fun getItemCount() = monthList.size / DAYS_IN_WEEK_NUMBER
+    override fun getItemCount() = monthList.size / DAYS_IN_WEEK
 
     inner class CalendarViewHolder(val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
         fun bind(
             weekNumber: Int,
         ) {
-            val indexExtra = weekNumber * DAYS_IN_WEEK_NUMBER
+            val indexExtra = weekNumber * DAYS_IN_WEEK
             binding.weekLayout.children.forEachIndexed { index, dayItem ->
                 bindDay(
                     DayItemBinding.bind(dayItem),
@@ -66,26 +65,24 @@ class CalendarRecyclerViewAdapter() :
             day: LocalDate,
             itemIndex: Int
         ) {
-            dayBinding.dayOfMonth.text = day.dayOfMonth.toString()
-            dayBinding.dayOfWeek.text =
-                day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-            dayBinding.currentDayMarker.isVisible = day.isEqual(today)
-            if (itemIndex == selectedDateListPosition) {
-                dayBinding.selectedBackground.visibility = View.VISIBLE
-                dayBinding.dayOfMonth.isSelected = true
-            } else {
-                dayBinding.selectedBackground.visibility = View.INVISIBLE
-                dayBinding.dayOfMonth.isSelected = false
-            }
-            dayBinding.dayLayout.setOnClickListener {
-                val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK_NUMBER
-                val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK_NUMBER
-                selectedDateListPosition = itemIndex
-                notifyItemChanged(newSelectedAdapterPosition)
-                if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
-                    notifyItemChanged(oldSelectedAdapterPosition)
+            with(dayBinding) {
+                dayOfMonth.text = day.dayOfMonth.toString()
+                dayOfWeek.text =
+                    day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                currentDayMarker.isVisible = day.isEqual(today)
+                selectedBackground.visibility =
+                    if (itemIndex == selectedDateListPosition) View.VISIBLE else View.INVISIBLE
+                dayOfMonth.isSelected = itemIndex == selectedDateListPosition
+                dayLayout.setOnClickListener {
+                    val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK
+                    val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK
+                    selectedDateListPosition = itemIndex
+                    notifyItemChanged(newSelectedAdapterPosition)
+                    if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
+                        notifyItemChanged(oldSelectedAdapterPosition)
+                    }
+                    onSelectedDateChanged(day)
                 }
-                onSelectedDateChanged(day)
             }
         }
     }

@@ -24,6 +24,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
+private const val CENTER_OF_FIVE_WEEKS_LIST = 2
 
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
@@ -63,7 +64,7 @@ class CalendarFragment : Fragment() {
             }
         }
 
-        binding.recyclerView.scrollToPosition(2)
+        binding.recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
