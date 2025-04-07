@@ -18,7 +18,7 @@ class CalendarViewModel : ViewModel() {
     val currentMonth = _currentMonth.asStateFlow()
 
     fun onSelectedMonthChanged(selectedMonth: Month) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             _currentMonth.emit(
                 calendarHelper.createListForMonth(month = selectedMonth)
             )
