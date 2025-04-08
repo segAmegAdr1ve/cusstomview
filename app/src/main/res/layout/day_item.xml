@@ -17,11 +17,10 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/large_card_height"
         android:layout_gravity="center_horizontal"
-        android:paddingVertical="20dp"
-        android:elevation="0dp"
-        app:cardCornerRadius="16dp" >
+        android:paddingVertical="@dimen/medium_padding"
+        app:cardCornerRadius="@dimen/medium_corner_radius" >
         <View
             android:id="@+id/selected_background"
             android:layout_width="wrap_content"
@@ -38,9 +37,9 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/current_day_marker"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginBottom="@dimen/current_day_marker_bottom_margin"
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
+            android:layout_marginBottom="@dimen/extra_small_padding"
             android:background="@android:color/holo_orange_dark"
             app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
             android:visibility="visible"

@@ -8,43 +8,43 @@
     <include
         android:id="@+id/monday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/tuesday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/wednesday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/thursday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/friday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/saturday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
     <include
         android:id="@+id/sunday_item"
         layout="@layout/day_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 

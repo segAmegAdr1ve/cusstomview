@@ -7,14 +7,13 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.cusstomview.Constants.DAYS_IN_WEEK
+import com.example.cusstomview.Constants.getLocale
 import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
 import com.example.cusstomview.helper.CalendarHelper
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.util.Locale
-
-private const val NO_SELECTION = -1
 
 class CalendarRecyclerViewAdapter() :
     RecyclerView.Adapter<CalendarRecyclerViewAdapter.CalendarViewHolder>() {
@@ -64,27 +63,29 @@ class CalendarRecyclerViewAdapter() :
             dayBinding: DayItemBinding,
             day: LocalDate,
             itemIndex: Int
-        ) {
-            with(dayBinding) {
-                dayOfMonth.text = day.dayOfMonth.toString()
-                dayOfWeek.text =
-                    day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                currentDayMarker.isVisible = day.isEqual(today)
-                selectedBackground.visibility =
-                    if (itemIndex == selectedDateListPosition) View.VISIBLE else View.INVISIBLE
-                dayOfMonth.isSelected = itemIndex == selectedDateListPosition
-                dayLayout.setOnClickListener {
-                    val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK
-                    val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK
-                    selectedDateListPosition = itemIndex
-                    notifyItemChanged(newSelectedAdapterPosition)
-                    if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
-                        notifyItemChanged(oldSelectedAdapterPosition)
-                    }
-                    onSelectedDateChanged(day)
+        ) = with(dayBinding) {
+            dayOfMonth.text = day.dayOfMonth.toString()
+            dayOfWeek.text =
+                day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
+            currentDayMarker.isVisible = day.isEqual(today)
+            selectedBackground.visibility =
+                if (itemIndex == selectedDateListPosition) View.VISIBLE else View.INVISIBLE
+            dayOfMonth.isSelected = itemIndex == selectedDateListPosition
+            dayLayout.setOnClickListener {
+                val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK
+                val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK
+                selectedDateListPosition = itemIndex
+                notifyItemChanged(newSelectedAdapterPosition)
+                if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
+                    notifyItemChanged(oldSelectedAdapterPosition)
                 }
+                onSelectedDateChanged(day)
             }
         }
+    }
+
+    companion object {
+        private const val NO_SELECTION = -1
     }
 }
 

@@ -8,8 +8,9 @@ import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import com.example.cusstomview.Constants.TIME_FORMAT_PATTERN
+import com.example.cusstomview.Constants.getLocale
 import java.time.LocalDateTime
-import java.util.Locale
 
 
 class DayTimelineView @JvmOverloads constructor(
@@ -23,7 +24,6 @@ class DayTimelineView @JvmOverloads constructor(
     private val lineCount = 24
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
-    private val locale = Locale.getDefault()
 
     private val today: LocalDateTime = LocalDateTime.now()
     var selectedDateTime: LocalDateTime = today
@@ -67,7 +67,7 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     private val timeList = (TIMELINE_START..TIMELINE_END).map {
-        String.format(locale, TIME_FORMAT_PATTERN, it)
+        String.format(getLocale(), TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {

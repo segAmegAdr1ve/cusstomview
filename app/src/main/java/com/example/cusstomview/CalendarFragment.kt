@@ -21,10 +21,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 import java.time.format.TextStyle
-import java.util.Locale
 
-private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
-private const val CENTER_OF_FIVE_WEEKS_LIST = 2
 
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
@@ -70,7 +67,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun setupMonthPicker() {
-        val locale = Locale.getDefault()
+        val locale = Constants.getLocale()
         val monthList = Month.entries.map { month ->
             month.getDisplayName(TextStyle.SHORT, locale)
         }
@@ -116,8 +113,13 @@ class CalendarFragment : Fragment() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
+        private const val CENTER_OF_FIVE_WEEKS_LIST = 2
     }
 }

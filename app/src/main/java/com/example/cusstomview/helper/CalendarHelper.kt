@@ -1,11 +1,10 @@
 package com.example.cusstomview.helper
 
-import com.example.cusstomview.DAYS_IN_WEEK
-import com.example.cusstomview.FIRST_DAY_OF_MONTH
+import com.example.cusstomview.Constants.DAYS_IN_WEEK
+import com.example.cusstomview.Constants.FIRST_DAY_OF_MONTH
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
-
 
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
