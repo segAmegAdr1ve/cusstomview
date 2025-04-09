@@ -27,6 +27,8 @@ class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
+    private var _selectionOwner: SelectionOwner? = null
+    private val selectionOwner get() = _selectionOwner!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,18 +43,26 @@ class CalendarFragment : Fragment() {
         setupAdapter(savedInstanceState)
 
         setupMonthPicker()
-
     }
 
     private fun setupAdapter(savedInstanceState: Bundle?) {
-        val calendarAdapter = CalendarRecyclerViewAdapter()
-        savedInstanceState?.let { bundle ->
-            calendarAdapter.selectedDateListPosition = bundle.getInt(SELECTED_DATE_LIST_POSITION)
+        val dateToSelect = if (savedInstanceState != null) {
+            val epoch = savedInstanceState.getLong(SELECTED_DATE)
+            LocalDate.ofEpochDay(epoch)
+        } else {
+            LocalDate.now()
         }
+        _selectionOwner = object : SelectionOwner(dateToSelect) {
+
+            override fun onSelectionChanged(date: LocalDate) {
+                super.onSelectionChanged(date)
+                binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
+            }
+
+        }
+
+        val calendarAdapter = CalendarRecyclerViewAdapter(selectionOwner)
         binding.recyclerView.adapter = calendarAdapter
-        calendarAdapter.onSelectedDateChanged = { date: LocalDate ->
-            binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
-        }
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
@@ -106,9 +116,9 @@ class CalendarFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(
-            SELECTED_DATE_LIST_POSITION,
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).selectedDateListPosition
+        outState.putLong(
+            SELECTED_DATE,
+            selectionOwner.selectedDate.toEpochDay()
         )
     }
 
@@ -118,7 +128,7 @@ class CalendarFragment : Fragment() {
     }
 
     companion object {
-        private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
+        private const val SELECTED_DATE = "SELECTED_DATE_LIST_POSITION"
         private const val CENTER_OF_FIVE_WEEKS_LIST = 2
     }
 }

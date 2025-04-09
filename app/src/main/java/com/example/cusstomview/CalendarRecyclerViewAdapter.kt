@@ -15,16 +15,20 @@ import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
 import java.time.LocalDate
 import java.time.format.TextStyle
 
-class CalendarRecyclerViewAdapter() :
-    ListAdapter<LocalDate, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback) {
-
-    var onSelectedDateChanged: (date: LocalDate) -> Unit = {}
+class CalendarRecyclerViewAdapter(private val selectionOwner: SelectionOwner) :
+    ListAdapter<LocalDate, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback),
+    View.OnClickListener {
 
     private val today = LocalDate.now()
-    var selectedDateListPosition = currentList.indexOf(today)
 
     fun removeSelection() {
-        selectedDateListPosition = NO_SELECTION
+        selectionResolver.removePreviousSelection()
+    }
+
+    override fun onClick(v: View) {
+        val selectedDate = v.tag as LocalDate
+        selectionOwner.onSelectionChanged(selectedDate)
+        notifyItemChanged(currentList.indexOf(selectedDate) / DAYS_IN_WEEK)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -53,7 +57,6 @@ class CalendarRecyclerViewAdapter() :
                 bindDay(
                     DayItemBinding.bind(dayItem),
                     currentList[index + indexExtra],
-                    index + indexExtra
                 )
             }
         }
@@ -61,30 +64,19 @@ class CalendarRecyclerViewAdapter() :
         private fun bindDay(
             dayBinding: DayItemBinding,
             day: LocalDate,
-            itemIndex: Int
         ) = with(dayBinding) {
+            dayBinding.root.tag = day
             dayOfMonth.text = day.dayOfMonth.toString()
-            dayOfWeek.text =
-                day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
+            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
             currentDayMarker.isVisible = day.isEqual(today)
-            selectedBackground.visibility =
-                if (itemIndex == selectedDateListPosition) View.VISIBLE else View.INVISIBLE
-            dayOfMonth.isSelected = itemIndex == selectedDateListPosition
-            dayLayout.setOnClickListener {
-                val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK
-                val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK
-                selectedDateListPosition = itemIndex
-                notifyItemChanged(newSelectedAdapterPosition)
-                if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
-                    notifyItemChanged(oldSelectedAdapterPosition)
-                }
-                onSelectedDateChanged(day)
-            }
+            if (selectionOwner.selectedDate == day) selectionResolver.select(dayBinding)
+            dayLayout.setOnClickListener(this@CalendarRecyclerViewAdapter)
+
         }
     }
 
+
     companion object {
-        private const val NO_SELECTION = -1
         val diffCallback = object : DiffUtil.ItemCallback<LocalDate>() {
             override fun areItemsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
                 return oldItem === newItem
@@ -94,6 +86,41 @@ class CalendarRecyclerViewAdapter() :
                 return oldItem == newItem
             }
         }
+
+        private val selectionResolver = object : SelectionResolver<DayItemBinding> {
+            override var selectedView: DayItemBinding? = null
+
+            override fun select(view: DayItemBinding) {
+                removePreviousSelection()
+                view.selectedBackground.visibility = View.VISIBLE
+                view.dayOfMonth.isSelected = true
+                selectedView = view
+            }
+
+            override fun removePreviousSelection() {
+                selectedView?.let { view ->
+                    view.selectedBackground.visibility = View.INVISIBLE
+                    view.dayOfMonth.isSelected = false
+                }
+                selectedView = null
+            }
+
+        }
+    }
+}
+
+private interface SelectionResolver<T> {
+    var selectedView: T?
+    fun select(view: T)
+    fun removePreviousSelection()
+}
+
+abstract class SelectionOwner(date: LocalDate) {
+    var selectedDate: LocalDate = date
+        private set
+
+    open fun onSelectionChanged(date: LocalDate) {
+        selectedDate = date
     }
 }
 
