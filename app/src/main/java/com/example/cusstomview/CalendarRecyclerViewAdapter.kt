@@ -5,24 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cusstomview.Constants.DAYS_IN_WEEK
 import com.example.cusstomview.Constants.getLocale
 import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
-import com.example.cusstomview.helper.CalendarHelper
 import java.time.LocalDate
 import java.time.format.TextStyle
 
 class CalendarRecyclerViewAdapter() :
-    RecyclerView.Adapter<CalendarRecyclerViewAdapter.CalendarViewHolder>() {
+    ListAdapter<LocalDate, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback) {
 
     var onSelectedDateChanged: (date: LocalDate) -> Unit = {}
-    var monthList: List<LocalDate> = CalendarHelper().createListOfDaysFromToday()
 
     private val today = LocalDate.now()
-    var selectedDateListPosition = monthList.indexOf(today)
+    var selectedDateListPosition = currentList.indexOf(today)
 
     fun removeSelection() {
         selectedDateListPosition = NO_SELECTION
@@ -42,7 +41,7 @@ class CalendarRecyclerViewAdapter() :
         holder.bind(position)
     }
 
-    override fun getItemCount() = monthList.size / DAYS_IN_WEEK
+    override fun getItemCount() = currentList.size / DAYS_IN_WEEK
 
     inner class CalendarViewHolder(val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
@@ -53,7 +52,7 @@ class CalendarRecyclerViewAdapter() :
             binding.weekLayout.children.forEachIndexed { index, dayItem ->
                 bindDay(
                     DayItemBinding.bind(dayItem),
-                    monthList[index + indexExtra],
+                    currentList[index + indexExtra],
                     index + indexExtra
                 )
             }
@@ -86,6 +85,15 @@ class CalendarRecyclerViewAdapter() :
 
     companion object {
         private const val NO_SELECTION = -1
+        val diffCallback = object : DiffUtil.ItemCallback<LocalDate>() {
+            override fun areItemsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
+                return oldItem === newItem
+            }
+
+            override fun areContentsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }
 

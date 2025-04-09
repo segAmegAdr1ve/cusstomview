@@ -56,8 +56,7 @@ class CalendarFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                calendarAdapter.monthList = monthList
-                calendarAdapter.notifyDataSetChanged()
+                calendarAdapter.submitList(monthList)
             }
         }
 
