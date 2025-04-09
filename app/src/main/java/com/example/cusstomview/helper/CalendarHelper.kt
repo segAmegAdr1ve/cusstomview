@@ -1,61 +1,50 @@
 package com.example.cusstomview.helper
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.internal.synchronized
-import kotlinx.coroutines.runBlocking
+import com.example.cusstomview.Constants.DAYS_IN_WEEK
+import com.example.cusstomview.Constants.FIRST_DAY_OF_MONTH
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 
-private const val DEFAULT_WEEK_NUMBER = 5
-private const val EXTRA_WEEK_NUMBER = 1
-const val DAYS_IN_WEEK_NUMBER = 7
-
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
+    val selectedDate: LocalDate = today
 
     fun createListOfDaysFromToday(): List<LocalDate> {
-        val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(2)
+        val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(DEFAULT_WEEKS_SUBTRACT)
         return createListOfDays(startDate, DEFAULT_WEEK_NUMBER)
     }
 
     fun createListForMonth(month: Month): List<LocalDate> {
-        val firstDayOfSelectedMonth = today.withMonth(month.value).withDayOfMonth(1)
+        val firstDayOfSelectedMonth =
+            today.withMonth(month.value).withDayOfMonth(FIRST_DAY_OF_MONTH)
         val startDate = if (firstDayOfSelectedMonth.dayOfWeek != DayOfWeek.MONDAY) {
             firstDayOfSelectedMonth.with(DayOfWeek.MONDAY)
-        } else firstDayOfSelectedMonth
-
-        val resultList = createListOfDays(startDate, DEFAULT_WEEK_NUMBER).toMutableList()
-        val lastItem = resultList.last()
-        if (lastItem.dayOfMonth < lastItem.month.maxLength() && lastItem.month == firstDayOfSelectedMonth.month) {
-            resultList += createListOfDays(lastItem, EXTRA_WEEK_NUMBER)
+        } else {
+            firstDayOfSelectedMonth
         }
-        return resultList
+
+        val weekNumber = firstDayOfSelectedMonth.plusWeeks(DEFAULT_WEEK_NUMBER.toLong()).let {
+            if (it.month == firstDayOfSelectedMonth.month && it.dayOfWeek != DayOfWeek.MONDAY) {
+                DEFAULT_WEEK_NUMBER + EXTRA_WEEK_NUMBER
+            } else {
+                DEFAULT_WEEK_NUMBER
+            }
+        }
+        return createListOfDays(startDate, weekNumber)
     }
 
     private fun createListOfDays(startDate: LocalDate, weekNumber: Int): List<LocalDate> {
-        return buildList<LocalDate> {
-            repeat(weekNumber * DAYS_IN_WEEK_NUMBER) { dayNumber ->
+        return buildList {
+            repeat(weekNumber * DAYS_IN_WEEK) { dayNumber ->
                 add(startDate.plusDays(dayNumber.toLong()))
             }
         }
     }
 
-}
-
-/*fun main() {
-    repeat(2) {
-        runBlocking {
-            a()
-        }
+    companion object {
+        private const val DEFAULT_WEEKS_SUBTRACT = 2L
+        private const val DEFAULT_WEEK_NUMBER = 5
+        private const val EXTRA_WEEK_NUMBER = 1
     }
 }
-
-
-suspend fun a() {
-    synch {
-        println(1)
-        delay(3L)
-        println(2)
-    }
-}*/

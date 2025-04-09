@@ -24,14 +24,14 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Month
 import java.time.format.TextStyle
-import java.util.Locale
 
-private const val SELECTED_DATE_LIST_POSITION = "SELECTED_DATE_LIST_POSITION"
 
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
+    private var _selectionOwner: SelectionOwner? = null
+    private val selectionOwner get() = _selectionOwner!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,30 +59,37 @@ class CalendarFragment : Fragment() {
     }
 
     private fun setupAdapter(savedInstanceState: Bundle?) {
-        val calendarAdapter = CalendarRecyclerViewAdapter()
-        savedInstanceState?.let { bundle ->
-            calendarAdapter.selectedDateListPosition = bundle.getInt(SELECTED_DATE_LIST_POSITION)
+        val dateToSelect = if (savedInstanceState != null) {
+            val epoch = savedInstanceState.getLong(SELECTED_DATE)
+            LocalDate.ofEpochDay(epoch)
+        } else {
+            LocalDate.now()
         }
+        _selectionOwner = object : SelectionOwner(dateToSelect) {
+
+            override fun onSelectionChanged(date: LocalDate) {
+                super.onSelectionChanged(date)
+                binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
+            }
+
+        }
+
+        val calendarAdapter = CalendarRecyclerViewAdapter(selectionOwner)
         binding.recyclerView.adapter = calendarAdapter
-        calendarAdapter.onSelectedDateChanged = { date: LocalDate ->
-            binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
-        }
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                Log.d("changed", "changed")
-                calendarAdapter.monthList = monthList
-                calendarAdapter.notifyDataSetChanged()
+                calendarAdapter.submitList(monthList)
             }
         }
 
-        binding.recyclerView.scrollToPosition(2)
+        binding.recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun setupMonthPicker() {
-        val locale = Locale.getDefault()
+        val locale = Constants.getLocale()
         val monthList = Month.entries.map { month ->
             month.getDisplayName(TextStyle.SHORT, locale)
         }
@@ -93,13 +100,7 @@ class CalendarFragment : Fragment() {
             monthList
         )
         binding.monthSpinner.adapter = monthPickerAdapter
-        lifecycleScope.launch {
-            viewModel.selectedDate.collect { date ->
-                binding.monthSpinner.setSelection(date.month.value - 1)
-            }
-        }
-
-        //binding.monthSpinner.setSelection(viewModel.selectedDate.month.value - 1)
+        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
 
         binding.monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
@@ -120,31 +121,27 @@ class CalendarFragment : Fragment() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
-            //viewModel.onSelectedMonthChanged(Month.of(position + 1))
+            viewModel.onSelectedMonthChanged(Month.of(position + 1))
             (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
             alertDialog.dismiss()
         }
     }
 
-    /*override fun onFragmentResult(requestKey: String, result: Bundle) {
-        when(requestKey) {
-            "requestKey" -> {
-                Log.d("request", "requestOnResult")
-            }
-        }
-    }*/
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(
-            SELECTED_DATE_LIST_POSITION,
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).selectedDateListPosition
+        outState.putLong(
+            SELECTED_DATE,
+            selectionOwner.selectedDate.toEpochDay()
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
+    companion object {
+        private const val SELECTED_DATE = "SELECTED_DATE_LIST_POSITION"
+        private const val CENTER_OF_FIVE_WEEKS_LIST = 2
+    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="timeline_text_size">14sp</dimen>
     <dimen name="current_date_text_size">20sp</dimen>
     <dimen name="current_day_of_month_text_size">16sp</dimen>
     <dimen name="match_constraints">0dp</dimen>
@@ -13,4 +12,12 @@
     <dimen name="medium_extra_space">32dp</dimen>
     <dimen name="horizontal_flow_gap">25dp</dimen>
     <dimen name="small_extra_space">8dp</dimen>
+    <dimen name="medium_text_size">16sp</dimen>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="extra_small_padding">4dp</dimen>
+    <dimen name="medium_corner_radius">16dp</dimen>
+    <dimen name="large_card_height">50dp</dimen>
+    <dimen name="medium_padding">20dp</dimen>
+    <dimen name="small_icon_size">8dp</dimen>
+    <dimen name="large_padding">30dp</dimen>
 </resources>

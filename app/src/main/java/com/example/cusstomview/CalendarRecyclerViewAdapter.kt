@@ -5,29 +5,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.cusstomview.Constants.DAYS_IN_WEEK
+import com.example.cusstomview.Constants.getLocale
 import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
-import com.example.cusstomview.helper.CalendarHelper
-import com.example.cusstomview.helper.DAYS_IN_WEEK_NUMBER
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.util.Locale
 
-private const val NO_SELECTION = -1
-
-class CalendarRecyclerViewAdapter() :
-    RecyclerView.Adapter<CalendarRecyclerViewAdapter.CalendarViewHolder>() {
-
-    var onSelectedDateChanged: (date: LocalDate) -> Unit = {}
-    var monthList: List<LocalDate> = CalendarHelper().createListOfDaysFromToday()
+class CalendarRecyclerViewAdapter(private val selectionOwner: SelectionOwner) :
+    ListAdapter<LocalDate, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback),
+    View.OnClickListener {
 
     private val today = LocalDate.now()
-    var selectedDateListPosition = monthList.indexOf(today)
 
     fun removeSelection() {
-        selectedDateListPosition = NO_SELECTION
+        selectionResolver.removePreviousSelection()
+    }
+
+    override fun onClick(v: View) {
+        val selectedDate = v.tag as LocalDate
+        selectionOwner.onSelectionChanged(selectedDate)
+        notifyItemChanged(currentList.indexOf(selectedDate) / DAYS_IN_WEEK)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -44,19 +45,18 @@ class CalendarRecyclerViewAdapter() :
         holder.bind(position)
     }
 
-    override fun getItemCount() = monthList.size / DAYS_IN_WEEK_NUMBER
+    override fun getItemCount() = currentList.size / DAYS_IN_WEEK
 
     inner class CalendarViewHolder(val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
         fun bind(
             weekNumber: Int,
         ) {
-            val indexExtra = weekNumber * DAYS_IN_WEEK_NUMBER
+            val indexExtra = weekNumber * DAYS_IN_WEEK
             binding.weekLayout.children.forEachIndexed { index, dayItem ->
                 bindDay(
                     DayItemBinding.bind(dayItem),
-                    monthList[index + indexExtra],
-                    index + indexExtra
+                    currentList[index + indexExtra],
                 )
             }
         }
@@ -64,30 +64,63 @@ class CalendarRecyclerViewAdapter() :
         private fun bindDay(
             dayBinding: DayItemBinding,
             day: LocalDate,
-            itemIndex: Int
-        ) {
-            dayBinding.dayOfMonth.text = day.dayOfMonth.toString()
-            dayBinding.dayOfWeek.text =
-                day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
-            dayBinding.currentDayMarker.isVisible = day.isEqual(today)
-            if (itemIndex == selectedDateListPosition) {
-                dayBinding.selectedBackground.visibility = View.VISIBLE
-                dayBinding.dayOfMonth.isSelected = true
-            } else {
-                dayBinding.selectedBackground.visibility = View.INVISIBLE
-                dayBinding.dayOfMonth.isSelected = false
+        ) = with(dayBinding) {
+            dayBinding.root.tag = day
+            dayOfMonth.text = day.dayOfMonth.toString()
+            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
+            currentDayMarker.isVisible = day.isEqual(today)
+            if (selectionOwner.selectedDate == day) selectionResolver.select(dayBinding)
+            dayLayout.setOnClickListener(this@CalendarRecyclerViewAdapter)
+
+        }
+    }
+
+
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<LocalDate>() {
+            override fun areItemsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
+                return oldItem === newItem
             }
-            dayBinding.dayLayout.setOnClickListener {
-                val oldSelectedAdapterPosition = selectedDateListPosition / DAYS_IN_WEEK_NUMBER
-                val newSelectedAdapterPosition = itemIndex / DAYS_IN_WEEK_NUMBER
-                selectedDateListPosition = itemIndex
-                notifyItemChanged(newSelectedAdapterPosition)
-                if (oldSelectedAdapterPosition != newSelectedAdapterPosition) {
-                    notifyItemChanged(oldSelectedAdapterPosition)
-                }
-                onSelectedDateChanged(day)
+
+            override fun areContentsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
+                return oldItem == newItem
             }
         }
+
+        private val selectionResolver = object : SelectionResolver<DayItemBinding> {
+            override var selectedView: DayItemBinding? = null
+
+            override fun select(view: DayItemBinding) {
+                removePreviousSelection()
+                view.selectedBackground.visibility = View.VISIBLE
+                view.dayOfMonth.isSelected = true
+                selectedView = view
+            }
+
+            override fun removePreviousSelection() {
+                selectedView?.let { view ->
+                    view.selectedBackground.visibility = View.INVISIBLE
+                    view.dayOfMonth.isSelected = false
+                }
+                selectedView = null
+            }
+
+        }
+    }
+}
+
+private interface SelectionResolver<T> {
+    var selectedView: T?
+    fun select(view: T)
+    fun removePreviousSelection()
+}
+
+abstract class SelectionOwner(date: LocalDate) {
+    var selectedDate: LocalDate = date
+        private set
+
+    open fun onSelectionChanged(date: LocalDate) {
+        selectedDate = date
     }
 }
 
