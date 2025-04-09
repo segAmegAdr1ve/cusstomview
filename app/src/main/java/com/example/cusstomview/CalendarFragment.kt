@@ -11,14 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.example.cusstomview.databinding.FragmentCalendarBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,11 +47,14 @@ class CalendarFragment : Fragment() {
 
         setupMonthPicker()
         val dialog = DatePickerBottomSheetFragment()
-        dialog.show(childFragmentManager, "tag")
-        /*lifecycleScope.launch(Dispatchers.Main) {
-            delay(4000)
-            dialog.dismiss()
-        }*/
+        dialog.show(parentFragmentManager, "tag")
+
+        setFragmentResultListener("requestKey") { requestKey: String, bundle: Bundle ->
+            val result = bundle.getLong("MY_KEY")
+            val date = LocalDate.ofEpochDay(result)
+            viewModel.onSelectedDateChanged(date)
+            Log.d("request", "$date")
+        }
 
     }
 
@@ -69,7 +71,7 @@ class CalendarFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
                 Log.d("changed", "changed")
-                //calendarAdapter.monthList = monthList
+                calendarAdapter.monthList = monthList
                 calendarAdapter.notifyDataSetChanged()
             }
         }
@@ -124,6 +126,14 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    /*override fun onFragmentResult(requestKey: String, result: Bundle) {
+        when(requestKey) {
+            "requestKey" -> {
+                Log.d("request", "requestOnResult")
+            }
+        }
+    }*/
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(
@@ -136,4 +146,5 @@ class CalendarFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
 }

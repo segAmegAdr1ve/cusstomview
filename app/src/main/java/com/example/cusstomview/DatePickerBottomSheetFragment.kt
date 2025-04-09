@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.cusstomview.databinding.FragmentDatePickerBottomSheetBinding
@@ -104,11 +105,14 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
         }
 
         binding.select.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Default) {
+            setFragmentResult("requestKey", Bundle().apply {
+                putLong("MY_KEY", selectedDate.value.toEpochDay())
+            })
+            /*lifecycleScope.launch(Dispatchers.Default) {
                 selectedDate.collect { date ->
                     viewModel.onSelectedDateChanged(date)
                 }
-            }
+            }*/
             /*GlobalScope.launch {
                 while (true) {
                     Log.d("onSelectedDateChangedJob", "is active = ${onSelectedDateChangedJob.isActive}, isCancelled = ${onSelectedDateChangedJob.isCancelled}, isCompleted = ${onSelectedDateChangedJob.isCompleted} ")
