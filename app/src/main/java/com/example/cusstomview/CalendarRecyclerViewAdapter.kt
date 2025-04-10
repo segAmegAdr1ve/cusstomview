@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.cusstomview.Constants.DAYS_IN_WEEK
-import com.example.cusstomview.Constants.getLocale
+import com.example.cusstomview.Constants.locale
 import com.example.cusstomview.databinding.DayItemBinding
 import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
 import java.time.LocalDate
@@ -67,14 +67,13 @@ class CalendarRecyclerViewAdapter(private val selectionOwner: SelectionOwner) :
         ) = with(dayBinding) {
             dayBinding.root.tag = day
             dayOfMonth.text = day.dayOfMonth.toString()
-            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
+            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             currentDayMarker.isVisible = day.isEqual(today)
             if (selectionOwner.selectedDate == day) selectionResolver.select(dayBinding)
             dayLayout.setOnClickListener(this@CalendarRecyclerViewAdapter)
 
         }
     }
-
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<LocalDate>() {
@@ -113,14 +112,5 @@ private interface SelectionResolver<T> {
     var selectedView: T?
     fun select(view: T)
     fun removePreviousSelection()
-}
-
-abstract class SelectionOwner(date: LocalDate) {
-    var selectedDate: LocalDate = date
-        private set
-
-    open fun onSelectionChanged(date: LocalDate) {
-        selectedDate = date
-    }
 }
 

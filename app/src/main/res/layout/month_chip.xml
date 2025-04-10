@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:checkable="true"
-    android:textSize="12sp"
+    android:textSize="@dimen/small_text_size"
     android:textColor="@drawable/text_color_selector"
     android:backgroundTint="@drawable/chip_background_selector"
-    app:textEndPadding="0dp"
-    app:textStartPadding="0dp"
+    app:textEndPadding="@dimen/zero"
+    app:textStartPadding="@dimen/zero"
     tools:text="Cентябрь" />

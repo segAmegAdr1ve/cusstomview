@@ -28,12 +28,6 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun setSelectedDate(newDate: LocalDate) {
-        viewModelScope.launch(Dispatchers.Default) {
-            _selectedDate.emit(newDate)
-        }
-    }
-
     private fun fetchCurrentMonthList(): List<LocalDate> {
         return calendarHelper.createListOfDaysFromToday()
     }

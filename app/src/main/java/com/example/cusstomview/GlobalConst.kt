@@ -6,5 +6,6 @@ object Constants {
     const val DAYS_IN_WEEK = 7
     const val FIRST_DAY_OF_MONTH = 1
     const val TIME_FORMAT_PATTERN = "%02d:00"
-    fun getLocale(): Locale = Locale.getDefault()
+    const val NOMINATIVE_MONTH_FORMAT_PATTERN = "LLLL"
+    val locale: Locale by lazy { Locale.getDefault() }
 }

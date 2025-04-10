@@ -9,7 +9,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import com.example.cusstomview.Constants.TIME_FORMAT_PATTERN
-import com.example.cusstomview.Constants.getLocale
+import com.example.cusstomview.Constants.locale
 import java.time.LocalDateTime
 
 class DayTimelineView @JvmOverloads constructor(
@@ -21,6 +21,10 @@ class DayTimelineView @JvmOverloads constructor(
     private val spaceBetweenHorizontalSeparators = 100f
     private val verticalLineOffset = 130f
     private val lineCount = 24
+    private val horizontalLineBeyondVerticalExtension = 15
+    private val verticalLineStartX = verticalLineOffset - horizontalLineBeyondVerticalExtension
+    private val textStartX = verticalLineOffset / 2
+    private val textVerticalOffset = 10
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
 
@@ -34,6 +38,7 @@ class DayTimelineView @JvmOverloads constructor(
     private val isCurrentDay
         get() = today.toLocalDate() == selectedDateTime.toLocalDate()
     private val currentTimeLineOffset = calculateCurrentTimeLineOffset()
+    private val currentTimeLineCircleRadius = 10f
     private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
 
     private val separatorPaint = Paint().apply {
@@ -66,7 +71,7 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     private val timeList = (TIMELINE_START..TIMELINE_END).map {
-        String.format(getLocale(), TIME_FORMAT_PATTERN, it)
+        String.format(locale, TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -74,7 +79,7 @@ class DayTimelineView @JvmOverloads constructor(
 
         for (index in 0..<lineCount) {
             linePath.moveTo(
-                verticalLineOffset - 15,
+                verticalLineStartX,
                 (spaceBetweenHorizontalSeparators * index)
             )
             linePath.lineTo(
@@ -84,11 +89,11 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawPath(linePath, separatorPaint)
         }
 
-        for (index in 0..<lineCount) {
+        for (index in 1..<lineCount) {
             canvas.drawText(
                 timeList[index],
-                verticalLineOffset / 2,
-                (spaceBetweenHorizontalSeparators * index) + 10,
+                textStartX,
+                (spaceBetweenHorizontalSeparators * index) + textVerticalOffset,
                 timePeriodPaint
             )
         }
@@ -109,7 +114,12 @@ class DayTimelineView @JvmOverloads constructor(
                 currentTimeLineOffset,
                 currentTimePaint
             )
-            canvas.drawCircle(verticalLineOffset, currentTimeLineOffset, 10f, currentTimePaint)
+            canvas.drawCircle(
+                verticalLineOffset,
+                currentTimeLineOffset,
+                currentTimeLineCircleRadius,
+                currentTimePaint
+            )
         }
     }
 

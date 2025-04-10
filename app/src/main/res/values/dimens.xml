@@ -12,7 +12,9 @@
     <dimen name="medium_extra_space">32dp</dimen>
     <dimen name="horizontal_flow_gap">25dp</dimen>
     <dimen name="small_extra_space">8dp</dimen>
+    <dimen name="large_text_size">20sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="extra_small_padding">4dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
@@ -20,4 +22,5 @@
     <dimen name="medium_padding">20dp</dimen>
     <dimen name="small_icon_size">8dp</dimen>
     <dimen name="large_padding">30dp</dimen>
+    <dimen name="large_extra_space">40dp</dimen>
 </resources>

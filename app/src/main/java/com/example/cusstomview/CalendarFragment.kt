@@ -1,29 +1,20 @@
 package com.example.cusstomview
 
-import android.R.layout.simple_list_item_1
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import androidx.appcompat.R.layout.support_simple_spinner_dropdown_item
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.example.cusstomview.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
 import com.example.cusstomview.databinding.FragmentCalendarBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Month
-import java.time.format.TextStyle
 
 
 class CalendarFragment : Fragment() {
@@ -45,15 +36,21 @@ class CalendarFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter(savedInstanceState)
 
-        setupMonthPicker()
-        val dialog = DatePickerBottomSheetFragment()
-        dialog.show(parentFragmentManager, "tag")
+        binding.currentDate.setOnClickListener {
+            DatePickerBottomSheetFragment()
+                .show(parentFragmentManager, DIALOG_TAG)
+        }
+        lifecycleScope.launch {
+            viewModel.selectedDate.collect { date ->
+                binding.month.text = date.month.format()
+                binding.year.text = date.year.toString()
+            }
+        }
 
-        setFragmentResultListener("requestKey") { requestKey: String, bundle: Bundle ->
-            val result = bundle.getLong("MY_KEY")
+        setFragmentResultListener(DatePickerBottomSheetFragment.DIALOG_REQUEST_KEY) { _, bundle ->
+            val result = bundle.getLong(DIALOG_RESULT_KEY)
             val date = LocalDate.ofEpochDay(result)
             viewModel.onSelectedDateChanged(date)
-            Log.d("request", "$date")
         }
 
     }
@@ -88,45 +85,6 @@ class CalendarFragment : Fragment() {
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
 
-    private fun setupMonthPicker() {
-        val locale = Constants.getLocale()
-        val monthList = Month.entries.map { month ->
-            month.getDisplayName(TextStyle.SHORT, locale)
-        }
-
-        val monthPickerAdapter = ArrayAdapter(
-            requireContext(),
-            support_simple_spinner_dropdown_item,
-            monthList
-        )
-        binding.monthSpinner.adapter = monthPickerAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
-
-        binding.monthSpinner.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                showMonthPickerDialog(monthList)
-            }
-            true
-        }
-    }
-
-    private fun showMonthPickerDialog(monthList: List<String>) {
-        val adapter = ArrayAdapter(requireContext(), simple_list_item_1, monthList)
-        val listView = ListView(requireContext())
-        listView.adapter = adapter
-        val alertDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.month_picker_title))
-            .setView(listView)
-            .show()
-
-        listView.setOnItemClickListener { _, _, position, _ ->
-            binding.monthSpinner.setSelection(position)
-            viewModel.onSelectedMonthChanged(Month.of(position + 1))
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
-            alertDialog.dismiss()
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong(
@@ -141,7 +99,8 @@ class CalendarFragment : Fragment() {
     }
 
     companion object {
-        private const val SELECTED_DATE = "SELECTED_DATE_LIST_POSITION"
+        private const val SELECTED_DATE = "SELECTED_DATE"
         private const val CENTER_OF_FIVE_WEEKS_LIST = 2
+        private const val DIALOG_TAG = "DIALOG_TAG"
     }
 }

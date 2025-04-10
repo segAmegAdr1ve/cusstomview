@@ -8,26 +8,6 @@
     android:paddingBottom="@dimen/medium_extra_space"
     tools:context=".DatePickerBottomSheetFragment">
 
-    <!--<TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />-->
-    <!--<com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:flow_horizontalAlign="center"
-        app:singleSelection="true"
-        app:selectionRequired="true"
-        app:flow_wrapMode="chain"
-        app:flow_verticalGap="60dp"
-        app:chipSpacingVertical="50dp" />-->
-
-
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
@@ -42,11 +22,11 @@
         android:id="@+id/selected_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        tools:text="Август"
+        android:layout_marginStart="@dimen/large_extra_space"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/arrow_forward" />
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward"
+        tools:text="Август" />
 
     <TextView
         android:id="@+id/selected_year"
@@ -77,8 +57,7 @@
         android:src="@drawable/baseline_arrow_back_ios_24"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintEnd_toStartOf="@id/arrow_forward"
-        app:layout_constraintTop_toTopOf="@+id/arrow_forward"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/custom_flow"

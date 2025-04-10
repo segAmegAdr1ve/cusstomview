@@ -2,28 +2,23 @@ package com.example.cusstomview
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.cusstomview.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
 import com.example.cusstomview.databinding.FragmentDatePickerBottomSheetBinding
 import com.example.cusstomview.databinding.MonthChipBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
-
 
 class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
     private val viewModel: CalendarViewModel by viewModels()
@@ -47,20 +42,6 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*val monthNames = listOf(
-            "Январь",
-            "Февраль",
-            "Март",
-            "Апрель",
-            "Май",
-            "Июнь",
-            "Июль",
-            "Август",
-            "Сентябрь",
-            "Октябрь",
-            "Ноябрь",
-            "Декабрь"
-        )*/
 
         Month.entries.forEach { month ->
             val chip = MonthChipBinding.inflate(LayoutInflater.from(view.context)).apply {
@@ -93,32 +74,20 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
                     isChecked = true
                     selectedChip = this
                 }
-
             }
         }
 
         binding.arrowForward.setOnClickListener {
-            selectedDate.update { it.plusMonths(1)}
+            selectedDate.update { it.plusMonths(1) }
         }
         binding.arrowBack.setOnClickListener {
-            selectedDate.update { it.plusMonths(-1)}
+            selectedDate.update { it.plusMonths(-1) }
         }
 
         binding.select.setOnClickListener {
-            setFragmentResult("requestKey", Bundle().apply {
-                putLong("MY_KEY", selectedDate.value.toEpochDay())
+            setFragmentResult(DIALOG_REQUEST_KEY, Bundle().apply {
+                putLong(DIALOG_RESULT_KEY, selectedDate.value.toEpochDay())
             })
-            /*lifecycleScope.launch(Dispatchers.Default) {
-                selectedDate.collect { date ->
-                    viewModel.onSelectedDateChanged(date)
-                }
-            }*/
-            /*GlobalScope.launch {
-                while (true) {
-                    Log.d("onSelectedDateChangedJob", "is active = ${onSelectedDateChangedJob.isActive}, isCancelled = ${onSelectedDateChangedJob.isCancelled}, isCompleted = ${onSelectedDateChangedJob.isCompleted} ")
-                    delay(300)
-                }
-            }*/
             this@DatePickerBottomSheetFragment.dismiss()
         }
 
@@ -129,26 +98,15 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
         _binding = null
         selectedChip = null
     }
+
+    companion object {
+        const val DIALOG_REQUEST_KEY = "DIALOG_FRAGMENT_REQUEST_KEY"
+        const val DIALOG_RESULT_KEY = "DIALOG_RESULT_KEY"
+    }
 }
 
 fun Month.format(): String {
-    return DateTimeFormatter.ofPattern("LLLL").format(this)
+    return DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN)
+        .format(this)
         .replaceFirstChar { it.titlecase() }
-}
-
-//fun TextView.setTextWith
-
-enum class NominativeMonth() {
-    JANUARY,
-    FEBRUARY,
-    /*MARCH,
-    APRIL,
-    MAY,
-    JUNE,
-    JULY,
-    AUGUST,
-    SEPTEMBER,
-    OCTOBER,
-    NOVEMBER,
-    DECEMBER;*/
 }
