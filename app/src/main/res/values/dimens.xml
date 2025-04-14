@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="current_date_text_size">20sp</dimen>
-    <dimen name="current_day_of_month_text_size">16sp</dimen>
+
     <dimen name="match_constraints">0dp</dimen>
     <dimen name="recycler_view_vertical_padding">4dp</dimen>
     <dimen name="current_day_marker_bottom_margin">4dp</dimen>
@@ -12,7 +11,8 @@
     <dimen name="medium_extra_space">32dp</dimen>
     <dimen name="horizontal_flow_gap">25dp</dimen>
     <dimen name="small_extra_space">8dp</dimen>
-    <dimen name="large_text_size">20sp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
+    <dimen name="medium_2_text_size">18sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="small_text_size">12sp</dimen>
     <dimen name="zero">0dp</dimen>

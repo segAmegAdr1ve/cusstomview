@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:checkable="true"
-    android:textSize="@dimen/small_text_size"
+    android:textAppearance="@style/TextAppearance.MdcTypographyStyles.HeadlineSmall"
     android:textColor="@drawable/text_color_selector"
     android:backgroundTint="@drawable/chip_background_selector"
     app:textEndPadding="@dimen/zero"

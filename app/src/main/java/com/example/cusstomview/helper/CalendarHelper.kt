@@ -8,7 +8,6 @@ import java.time.Month
 
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
-    val selectedDate: LocalDate = today
 
     fun createListOfDaysFromToday(): List<LocalDate> {
         val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(DEFAULT_WEEKS_SUBTRACT)

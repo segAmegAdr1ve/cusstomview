@@ -16,13 +16,15 @@
         android:src="@drawable/drag_handle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/selected_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/large_extra_space"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/arrow_forward"
@@ -33,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/small_extra_space"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintStart_toEndOf="@id/selected_month"
         app:layout_constraintTop_toTopOf="@+id/arrow_forward"
@@ -44,20 +47,22 @@
         android:layout_height="@dimen/change_year_arrow_box"
         android:layout_marginTop="@dimen/change_year_arrow_vertical_extra_space"
         android:layout_marginEnd="@dimen/change_year_arrow_right_extra_space"
-        android:backgroundTint="@color/m3_ref_palette_neutral96"
+        android:backgroundTint="?attr/colorSurfaceContainerLow"
         android:src="@drawable/baseline_arrow_forward_ios_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
     <ImageButton
         android:id="@+id/arrow_back"
         android:layout_width="@dimen/change_year_arrow_box"
         android:layout_height="@dimen/change_year_arrow_box"
-        android:backgroundTint="@color/m3_ref_palette_neutral96"
+        android:backgroundTint="?attr/colorSurfaceContainerLow"
         android:src="@drawable/baseline_arrow_back_ios_24"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintEnd_toStartOf="@id/arrow_forward"
-        app:layout_constraintTop_toTopOf="@+id/arrow_forward" />
+        app:layout_constraintTop_toTopOf="@+id/arrow_forward"
+        app:tint="?attr/colorOnSurface" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/custom_flow"
@@ -73,15 +78,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/arrow_forward" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/select"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/medium_extra_space"
         android:layout_marginTop="@dimen/drag_handle_top_extra_space"
-        android:backgroundTint="@color/distantly_blue"
+        android:backgroundTint="?attr/colorTertiary"
         android:text="@string/select_button_text"
-        android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.HeadlineMedium"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,7 +2,6 @@ package com.example.cusstomview
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
@@ -42,22 +41,19 @@ class DayTimelineView @JvmOverloads constructor(
     private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
 
     private val separatorPaint = Paint().apply {
-        color = resources.getColor(
-            com.google.android.material.R.color.material_grey_300,
-            context.theme
-        )
+        color = resources.getColor(R.color.md_theme_secondary, context.theme)
         style = Paint.Style.STROKE
         strokeWidth = 1f
     }
 
     private val currentTimePaint = Paint().apply {
-        color = Color.BLACK
+        color = resources.getColor(R.color.md_theme_primary, context.theme)
         style = Paint.Style.FILL
         strokeWidth = 2f
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLACK
+        color = resources.getColor(R.color.md_theme_secondary, context.theme)
         typeface = Typeface.MONOSPACE
         textSize = resources.getDimension(R.dimen.medium_text_size)
         textAlign = Paint.Align.CENTER

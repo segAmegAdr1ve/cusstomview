@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class CalendarViewModel : ViewModel() {
-    val calendarHelper = CalendarHelper()
+    private val calendarHelper = CalendarHelper()
 
     private val _selectedDate: MutableStateFlow<LocalDate> = MutableStateFlow(LocalDate.now())
     var selectedDate = _selectedDate.asStateFlow()

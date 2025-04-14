@@ -37,9 +37,13 @@ class CalendarFragment : Fragment() {
         setupAdapter(savedInstanceState)
 
         binding.currentDate.setOnClickListener {
-            DatePickerBottomSheetFragment()
-                .show(parentFragmentManager, DIALOG_TAG)
+            DatePickerBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(DIALOG_RESULT_KEY, viewModel.selectedDate.value.toEpochDay())
+                }
+            }.show(parentFragmentManager, DIALOG_TAG)
         }
+
         lifecycleScope.launch {
             viewModel.selectedDate.collect { date ->
                 binding.month.text = date.month.format()
@@ -76,7 +80,9 @@ class CalendarFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                calendarAdapter.submitList(monthList)
+                calendarAdapter.submitList(monthList) {
+                    calendarAdapter.removeSelection()
+                }
             }
         }
 
@@ -96,6 +102,7 @@ class CalendarFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        _selectionOwner = null
     }
 
     companion object {

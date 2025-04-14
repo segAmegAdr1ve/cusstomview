@@ -27,6 +27,7 @@ class CalendarRecyclerViewAdapter(private val selectionOwner: SelectionOwner) :
 
     override fun onClick(v: View) {
         val selectedDate = v.tag as LocalDate
+        if (selectionOwner.selectedDate == selectedDate) return
         selectionOwner.onSelectionChanged(selectedDate)
         notifyItemChanged(currentList.indexOf(selectedDate) / DAYS_IN_WEEK)
     }

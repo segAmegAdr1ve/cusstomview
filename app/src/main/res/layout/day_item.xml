@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.BodyMedium"
         tools:text="Пн" />
 
     <com.google.android.material.card.MaterialCardView
@@ -25,13 +26,15 @@
             android:id="@+id/selected_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/custom_blue"
+            android:background="?attr/colorPrimary"
             android:visibility="invisible"/>
+
         <TextView
             android:id="@+id/day_of_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.TitleMedium"
             android:textColor="@drawable/text_color_selector"
             tools:text="1" />
 

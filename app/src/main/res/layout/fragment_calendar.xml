@@ -20,6 +20,7 @@
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
             tools:text="Апрель" />
 
         <TextView
@@ -27,13 +28,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/small_extra_space"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
             tools:text="2025" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/baseline_arrow_downward_24"
-            app:tint="@color/black" />
+            app:tint="?attr/colorOnSurface" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

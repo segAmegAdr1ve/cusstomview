@@ -1,12 +1,10 @@
 package com.example.cusstomview
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.cusstomview.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
 import com.example.cusstomview.databinding.FragmentDatePickerBottomSheetBinding
@@ -21,20 +19,19 @@ import java.time.Month
 import java.time.format.DateTimeFormatter
 
 class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
-    private val viewModel: CalendarViewModel by viewModels()
     private lateinit var selectedDate: MutableStateFlow<LocalDate>
     private var _binding: FragmentDatePickerBottomSheetBinding? = null
     private val binding get() = _binding!!
     private var selectedChip: Chip? = null
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        selectedDate = MutableStateFlow(viewModel.selectedDate.value)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val date = LocalDate.ofEpochDay(requireArguments().getLong(DIALOG_RESULT_KEY))
+        selectedDate = MutableStateFlow(date)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDatePickerBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
@@ -42,9 +39,30 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        createChips()
+        setupButtons()
 
+        lifecycleScope.launch {
+            selectedDate.collect { selectedDate ->
+                binding.selectedMonth.text = selectedDate.month.format()
+                binding.selectedYear.text = selectedDate.year.toString()
+            }
+        }
+
+        lifecycleScope.launch {
+            selectedDate.collect { selectedDate ->
+                binding.root.findViewWithTag<Chip>(selectedDate.month).run {
+                    isChecked = true
+                    selectedChip = this
+                }
+            }
+        }
+
+    }
+
+    private fun createChips() {
         Month.entries.forEach { month ->
-            val chip = MonthChipBinding.inflate(LayoutInflater.from(view.context)).apply {
+            val chip = MonthChipBinding.inflate(LayoutInflater.from(view?.context)).apply {
                 root.id = View.generateViewId()
                 root.tag = month
                 root.text = month.format()
@@ -60,23 +78,9 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
             binding.constraintLayout.addView(chip.root)
             binding.customFlow.referencedIds += chip.root.id
         }
+    }
 
-        lifecycleScope.launch {
-            selectedDate.collect { currentDate ->
-                binding.selectedMonth.text = currentDate.month.format()
-                binding.selectedYear.text = currentDate.year.toString()
-            }
-        }
-
-        lifecycleScope.launch {
-            selectedDate.collect { selectedDate ->
-                binding.root.findViewWithTag<Chip>(selectedDate.month).run {
-                    isChecked = true
-                    selectedChip = this
-                }
-            }
-        }
-
+    private fun setupButtons() {
         binding.arrowForward.setOnClickListener {
             selectedDate.update { it.plusMonths(1) }
         }
@@ -90,7 +94,6 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
             })
             this@DatePickerBottomSheetFragment.dismiss()
         }
-
     }
 
     override fun onDestroyView() {
@@ -106,7 +109,6 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
 }
 
 fun Month.format(): String {
-    return DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN)
-        .format(this)
+    return DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN).format(this)
         .replaceFirstChar { it.titlecase() }
 }

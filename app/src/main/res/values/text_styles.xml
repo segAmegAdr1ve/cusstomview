@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.MdcTypographyStyles.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/rubik</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+
+    <style name="TextAppearance.MdcTypographyStyles.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/rubik</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/medium_2_text_size</item>
+    </style>
+
+    <style name="TextAppearance.MdcTypographyStyles.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/rubik</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="TextAppearance.MdcTypographyStyles.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/rubik</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/medium_2_text_size</item>
+    </style>
+
+    <style name="TextAppearance.MdcTypographyStyles.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+</resources>
