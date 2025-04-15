@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "cusstomview"
+rootProject.name = "calendar"
 include(":app")
  

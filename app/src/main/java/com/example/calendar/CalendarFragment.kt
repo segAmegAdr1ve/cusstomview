@@ -1,4 +1,4 @@
-package com.example.cusstomview
+package com.example.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.example.cusstomview.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
-import com.example.cusstomview.databinding.FragmentCalendarBinding
+import com.example.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
+import com.example.calendar.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime

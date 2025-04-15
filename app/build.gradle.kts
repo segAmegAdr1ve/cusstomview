@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cusstomview"
+    namespace = "com.example.calendar"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.cusstomview"
+        applicationId = "com.example.calendar"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

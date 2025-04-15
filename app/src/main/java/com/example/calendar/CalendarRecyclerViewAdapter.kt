@@ -1,4 +1,4 @@
-package com.example.cusstomview
+package com.example.calendar
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,10 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.cusstomview.Constants.DAYS_IN_WEEK
-import com.example.cusstomview.Constants.locale
-import com.example.cusstomview.databinding.DayItemBinding
-import com.example.cusstomview.databinding.RecyclerViewCalendarItemBinding
+import com.example.calendar.Constants.DAYS_IN_WEEK
+import com.example.calendar.Constants.locale
+import com.example.calendar.databinding.DayItemBinding
+import com.example.calendar.databinding.RecyclerViewCalendarItemBinding
 import java.time.LocalDate
 import java.time.format.TextStyle
 
