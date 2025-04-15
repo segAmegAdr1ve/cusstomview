@@ -22,6 +22,9 @@ class DayTimelineView @JvmOverloads constructor(
     private val spaceBetweenHorizontalSeparators = 100f
     private val verticalLineOffset = 130f
     private val lineCount = 24
+    private val separatorWidth = 1f
+    private val currentTimelineWidth = 2f
+    private val currentTimelineCircleRadius = 10f
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
 
@@ -43,13 +46,13 @@ class DayTimelineView @JvmOverloads constructor(
             context.theme
         )
         style = Paint.Style.STROKE
-        strokeWidth = 1f
+        strokeWidth = separatorWidth
     }
 
     private val currentTimePaint = Paint().apply {
         color = Color.BLACK
         style = Paint.Style.FILL
-        strokeWidth = 2f
+        strokeWidth = currentTimelineWidth
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -62,7 +65,7 @@ class DayTimelineView @JvmOverloads constructor(
     private val linePath = Path().apply {
         repeat(lineCount) {
             this.moveTo(ZERO_POSITION_F, spaceBetweenHorizontalSeparators * it)
-            this.lineTo(width * 1f, spaceBetweenHorizontalSeparators * it)
+            this.lineTo(width.toFloat(), spaceBetweenHorizontalSeparators * it)
         }
     }
 
@@ -79,7 +82,7 @@ class DayTimelineView @JvmOverloads constructor(
                 (spaceBetweenHorizontalSeparators * index)
             )
             linePath.lineTo(
-                width * 1f,
+                width.toFloat(),
                 (spaceBetweenHorizontalSeparators * index)
             )
             canvas.drawPath(linePath, separatorPaint)
@@ -106,11 +109,16 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawLine(
                 verticalLineOffset,
                 currentTimeLineOffset,
-                width * 1f,
+                width.toFloat(),
                 currentTimeLineOffset,
                 currentTimePaint
             )
-            canvas.drawCircle(verticalLineOffset, currentTimeLineOffset, 10f, currentTimePaint)
+            canvas.drawCircle(
+                verticalLineOffset,
+                currentTimeLineOffset,
+                currentTimelineCircleRadius,
+                currentTimePaint
+            )
         }
     }
 

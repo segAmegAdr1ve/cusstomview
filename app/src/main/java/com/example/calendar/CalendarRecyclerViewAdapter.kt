@@ -45,9 +45,7 @@ class CalendarRecyclerViewAdapter(
 
     inner class CalendarViewHolder(private val binding: RecyclerViewCalendarItemBinding) :
         ViewHolder(binding.root) {
-        fun bind(
-            weekNumber: Int,
-        ) {
+        fun bind(weekNumber: Int) {
             val indexExtra = weekNumber * DAYS_IN_WEEK
             binding.weekLayout.children.forEachIndexed { index, dayItem ->
                 bindDay(
@@ -61,8 +59,8 @@ class CalendarRecyclerViewAdapter(
             dayBinding: DayItemBinding,
             day: LocalDate
         ) = with(dayBinding) {
-            dayBinding.root.tag = day
-            dayOfMonth.text = day.dayOfMonth.toString()
+            root.tag = day
+            dayOfMonth.text = String.format(day.dayOfMonth.toString())
             dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
             currentDayMarker.isVisible = day.isEqual(today)
             setSelectedDay(day = day, dayBinding = dayBinding)
@@ -75,7 +73,7 @@ class CalendarRecyclerViewAdapter(
         }
     }
 
-    fun setSelectedDay(day: LocalDate){
+    fun setSelectedDay(day: LocalDate) {
         selectedDay = day
     }
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.example.calendar.Constants.FIRST_DAY_OF_MONTH
 import com.example.calendar.databinding.FragmentCalendarBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -104,7 +105,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
-            viewModel.onSelectedMonthChanged(Month.of(position + 1))
+            viewModel.onSelectedMonthChanged(Month.of(position + FIRST_DAY_OF_MONTH))
             (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
             alertDialog.dismiss()
         }
