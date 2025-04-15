@@ -84,7 +84,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             monthList
         )
         binding.monthSpinner.adapter = monthPickerAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - 1)
+        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - FIRST_DAY_OF_MONTH)
 
         binding.monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
