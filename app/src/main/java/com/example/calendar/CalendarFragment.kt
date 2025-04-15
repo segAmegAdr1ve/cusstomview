@@ -1,4 +1,4 @@
-package com.example.cusstomview
+package com.example.calendar
 
 import android.R.layout.simple_list_item_1
 import android.os.Bundle
@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.example.cusstomview.databinding.FragmentCalendarBinding
+import com.example.calendar.databinding.FragmentCalendarBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -23,12 +23,10 @@ import java.time.Month
 import java.time.format.TextStyle
 
 
-class CalendarFragment : Fragment() {
+class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
-    private var _selectionOwner: SelectionOwner? = null
-    private val selectionOwner get() = _selectionOwner!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,16 +50,10 @@ class CalendarFragment : Fragment() {
         } else {
             LocalDate.now()
         }
-        _selectionOwner = object : SelectionOwner(dateToSelect) {
-
-            override fun onSelectionChanged(date: LocalDate) {
-                super.onSelectionChanged(date)
-                binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
-            }
-
-        }
-
-        val calendarAdapter = CalendarRecyclerViewAdapter(selectionOwner)
+        //TODO -> вынести в функцию getSelectedDay
+        //TODO ->
+        val calendarAdapter = CalendarRecyclerViewAdapter(this)
+        calendarAdapter.setSelectedDay(dateToSelect)
         binding.recyclerView.adapter = calendarAdapter
 
         lifecycleScope.launch {
@@ -73,6 +65,10 @@ class CalendarFragment : Fragment() {
         binding.recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
+    }
+
+    private fun setSelectedDay(dateToSelect: LocalDate) = with(binding) {
+
     }
 
     private fun setupMonthPicker() {
@@ -118,7 +114,7 @@ class CalendarFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putLong(
             SELECTED_DATE,
-            selectionOwner.selectedDate.toEpochDay()
+            binding.dayTimelineView.selectedDateTime.toLocalDate().toEpochDay()
         )
     }
 
@@ -130,5 +126,9 @@ class CalendarFragment : Fragment() {
     companion object {
         private const val SELECTED_DATE = "SELECTED_DATE_LIST_POSITION"
         private const val CENTER_OF_FIVE_WEEKS_LIST = 2
+    }
+
+    override fun onSelect(day: LocalDate) = with(binding) {
+        dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
     }
 }

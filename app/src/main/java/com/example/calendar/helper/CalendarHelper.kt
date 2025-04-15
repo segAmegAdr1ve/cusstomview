@@ -1,7 +1,7 @@
-package com.example.cusstomview.helper
+package com.example.calendar.helper
 
-import com.example.cusstomview.Constants.DAYS_IN_WEEK
-import com.example.cusstomview.Constants.FIRST_DAY_OF_MONTH
+import com.example.calendar.Constants.DAYS_IN_WEEK
+import com.example.calendar.Constants.FIRST_DAY_OF_MONTH
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month

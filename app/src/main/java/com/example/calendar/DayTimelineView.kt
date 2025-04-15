@@ -1,4 +1,4 @@
-package com.example.cusstomview
+package com.example.calendar
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,8 +8,8 @@ import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import com.example.cusstomview.Constants.TIME_FORMAT_PATTERN
-import com.example.cusstomview.Constants.getLocale
+import com.example.calendar.Constants.TIME_FORMAT_PATTERN
+import com.example.calendar.Constants.getLocale
 import java.time.LocalDateTime
 
 

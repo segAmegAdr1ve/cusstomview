@@ -1,4 +1,4 @@
-package com.example.cusstomview
+package com.example.calendar
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,9 +21,6 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.graphics.withSave
-import androidx.core.view.isVisible
-import kotlin.io.path.Path
 
 class KView(
     context: Context,
