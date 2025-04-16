@@ -1,4 +1,4 @@
-package com.example.calendar
+package com.nc.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
-import com.example.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
-import com.example.calendar.databinding.FragmentDatePickerBottomSheetBinding
-import com.example.calendar.databinding.MonthChipBinding
+import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
+import com.nc.calendar.databinding.FragmentDatePickerBottomSheetBinding
+import com.nc.calendar.databinding.MonthChipBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.flow.MutableStateFlow

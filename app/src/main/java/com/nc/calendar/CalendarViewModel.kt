@@ -1,8 +1,8 @@
-package com.example.calendar
+package com.nc.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.calendar.helper.CalendarHelper
+import com.nc.calendar.helper.CalendarHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
