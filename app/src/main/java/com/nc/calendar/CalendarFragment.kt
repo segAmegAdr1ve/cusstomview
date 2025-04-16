@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nc.calendar.Constants.FIRST_DAY_OF_MONTH
 import com.nc.calendar.databinding.FragmentCalendarBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -45,11 +46,11 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         setupMonthPicker()
     }
 
-    private fun setupAdapter(savedInstanceState: Bundle?) {
+    private fun setupAdapter(savedInstanceState: Bundle?) = with(binding) {
         calendarAdapter.setSelectedDay(
             getSelectedDay(savedInstanceState)
         )
-        binding.recyclerView.adapter = calendarAdapter
+        recyclerView.adapter = calendarAdapter
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
@@ -57,7 +58,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             }
         }
 
-        binding.recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
+        recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
@@ -70,7 +71,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             LocalDate.now()
         }
 
-    private fun setupMonthPicker() {
+    private fun setupMonthPicker() = with(binding) {
         val locale = Constants.getLocale()
         val monthList = Month.entries.map { month ->
             month.getDisplayName(TextStyle.SHORT, locale)
@@ -81,10 +82,10 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             support_simple_spinner_dropdown_item,
             monthList
         )
-        binding.monthSpinner.adapter = monthPickerAdapter
-        binding.monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - FIRST_DAY_OF_MONTH)
+        monthSpinner.adapter = monthPickerAdapter
+        monthSpinner.setSelection(viewModel.calendarHelper.selectedDate.month.value - FIRST_DAY_OF_MONTH)
 
-        binding.monthSpinner.setOnTouchListener { _, event ->
+        monthSpinner.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 showMonthPickerDialog(monthList)
             }

@@ -141,10 +141,10 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     companion object {
-        const val TIMELINE_START = 1
-        const val TIME_LIST_START = 0
-        const val TIME_LIST_END = 23
-        const val MINUTE_IN_HOUR = 60
-        const val ZERO_POSITION_F = 0f
+        private const val TIMELINE_START = 1
+        private const val TIME_LIST_START = 0
+        private const val TIME_LIST_END = 23
+        private const val MINUTE_IN_HOUR = 60
+        private const val ZERO_POSITION_F = 0f
     }
 }
