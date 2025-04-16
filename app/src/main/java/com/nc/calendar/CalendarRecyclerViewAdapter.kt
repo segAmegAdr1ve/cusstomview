@@ -1,4 +1,4 @@
-package com.example.calendar
+package com.nc.calendar
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,10 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.example.calendar.Constants.DAYS_IN_WEEK
-import com.example.calendar.Constants.getLocale
-import com.example.calendar.databinding.DayItemBinding
-import com.example.calendar.databinding.RecyclerViewCalendarItemBinding
+import com.nc.calendar.Constants.DAYS_IN_WEEK
+import com.nc.calendar.Constants.getLocale
+import com.nc.calendar.databinding.DayItemBinding
+import com.nc.calendar.databinding.RecyclerViewCalendarItemBinding
 import java.time.LocalDate
 import java.time.format.TextStyle
 
@@ -99,6 +99,10 @@ class CalendarRecyclerViewAdapter(
         selectedDay = null
     }
 
+    interface Listener {
+        fun onSelect(day: LocalDate)
+    }
+
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<LocalDate>() {
             override fun areItemsTheSame(oldItem: LocalDate, newItem: LocalDate): Boolean {
@@ -109,9 +113,5 @@ class CalendarRecyclerViewAdapter(
                 return oldItem == newItem
             }
         }
-    }
-
-    interface Listener {
-        fun onSelect(day: LocalDate)
     }
 }

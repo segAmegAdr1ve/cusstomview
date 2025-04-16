@@ -1,4 +1,4 @@
-package com.example.calendar
+package com.nc.calendar
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,8 +8,9 @@ import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import com.example.calendar.Constants.TIME_FORMAT_PATTERN
-import com.example.calendar.Constants.getLocale
+import com.google.android.material.R.color.material_grey_300
+import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
+import com.nc.calendar.Constants.getLocale
 import java.time.LocalDateTime
 
 
@@ -25,6 +26,10 @@ class DayTimelineView @JvmOverloads constructor(
     private val separatorWidth = 1f
     private val currentTimelineWidth = 2f
     private val currentTimelineCircleRadius = 10f
+    private val horizontalLineBeyondVerticalExtension = 15
+    private val verticalLineStartX = verticalLineOffset - horizontalLineBeyondVerticalExtension
+    private val textStartX = verticalLineOffset / 2
+    private val textVerticalOffset = 10
     private val totalHeight
         get() = spaceBetweenHorizontalSeparators * lineCount
 
@@ -42,7 +47,7 @@ class DayTimelineView @JvmOverloads constructor(
 
     private val separatorPaint = Paint().apply {
         color = resources.getColor(
-            com.google.android.material.R.color.material_grey_300,
+            material_grey_300,
             context.theme
         )
         style = Paint.Style.STROKE
@@ -78,7 +83,7 @@ class DayTimelineView @JvmOverloads constructor(
 
         for (index in 0..<lineCount) {
             linePath.moveTo(
-                verticalLineOffset - 15,
+                verticalLineStartX,
                 (spaceBetweenHorizontalSeparators * index)
             )
             linePath.lineTo(
@@ -91,8 +96,8 @@ class DayTimelineView @JvmOverloads constructor(
         for (index in 1..<lineCount) {
             canvas.drawText(
                 timeList[index],
-                verticalLineOffset / 2,
-                (spaceBetweenHorizontalSeparators * index) + 10,
+                textStartX,
+                (spaceBetweenHorizontalSeparators * index) + textVerticalOffset,
                 timePeriodPaint
             )
         }

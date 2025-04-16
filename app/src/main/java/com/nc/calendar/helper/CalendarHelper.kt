@@ -1,7 +1,7 @@
-package com.example.calendar.helper
+package com.nc.calendar.helper
 
-import com.example.calendar.Constants.DAYS_IN_WEEK
-import com.example.calendar.Constants.FIRST_DAY_OF_MONTH
+import com.nc.calendar.Constants.DAYS_IN_WEEK
+import com.nc.calendar.Constants.FIRST_DAY_OF_MONTH
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
