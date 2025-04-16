@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nc.calendar.Constants.FIRST_DAY_OF_MONTH
 import com.nc.calendar.databinding.FragmentCalendarBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -66,8 +65,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private fun getSelectedDay(savedState: Bundle?) =
         if (savedState != null) {
             LocalDate.ofEpochDay(savedState.getLong(SELECTED_DATE))
-        }
-        else {
+        } else {
             LocalDate.now()
         }
 
