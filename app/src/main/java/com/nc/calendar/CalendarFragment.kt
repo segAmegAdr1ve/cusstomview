@@ -26,6 +26,7 @@ import java.time.format.TextStyle
 
 class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
+    private val calendarAdapter by lazy { CalendarRecyclerViewAdapter(this) }
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
 
@@ -45,7 +46,6 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     }
 
     private fun setupAdapter(savedInstanceState: Bundle?) {
-        val calendarAdapter = CalendarRecyclerViewAdapter(this)
         calendarAdapter.setSelectedDay(
             getSelectedDay(savedInstanceState)
         )
@@ -63,9 +63,12 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     }
 
     private fun getSelectedDay(savedState: Bundle?) =
-        if (savedState != null) LocalDate.ofEpochDay(savedState.getLong(SELECTED_DATE))
-        else LocalDate.now()
-
+        if (savedState != null) {
+            LocalDate.ofEpochDay(savedState.getLong(SELECTED_DATE))
+        }
+        else {
+            LocalDate.now()
+        }
 
     private fun setupMonthPicker() {
         val locale = Constants.getLocale()
@@ -101,7 +104,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         listView.setOnItemClickListener { _, _, position, _ ->
             binding.monthSpinner.setSelection(position)
             viewModel.onSelectedMonthChanged(Month.of(position + FIRST_DAY_OF_MONTH))
-            (binding.recyclerView.adapter as CalendarRecyclerViewAdapter).removeSelection()
+            calendarAdapter.removeSelection()
             alertDialog.dismiss()
         }
     }

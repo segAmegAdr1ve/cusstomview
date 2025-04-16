@@ -74,14 +74,14 @@ class DayTimelineView @JvmOverloads constructor(
         }
     }
 
-    private val timeList = (TIMELINE_START..TIMELINE_END).map {
+    private val timeList = (TIME_LIST_START..TIME_LIST_END).map {
         String.format(getLocale(), TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        for (index in 0..<lineCount) {
+        for (index in TIMELINE_START..<lineCount) {
             linePath.moveTo(
                 verticalLineStartX,
                 (spaceBetweenHorizontalSeparators * index)
@@ -93,7 +93,7 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawPath(linePath, separatorPaint)
         }
 
-        for (index in 1..<lineCount) {
+        for (index in TIMELINE_START..<lineCount) {
             canvas.drawText(
                 timeList[index],
                 textStartX,
@@ -141,8 +141,9 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     companion object {
-        const val TIMELINE_START = 0
-        const val TIMELINE_END = 23
+        const val TIMELINE_START = 1
+        const val TIME_LIST_START = 0
+        const val TIME_LIST_END = 23
         const val MINUTE_IN_HOUR = 60
         const val ZERO_POSITION_F = 0f
     }
