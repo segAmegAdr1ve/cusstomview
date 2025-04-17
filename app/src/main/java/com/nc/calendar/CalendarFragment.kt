@@ -15,14 +15,15 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.Month
+import java.time.format.TextStyle
 
 
-class CalendarFragment : Fragment() {
+class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
+    private val calendarAdapter by lazy { CalendarRecyclerViewAdapter(this) }
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
-    private var _selectionOwner: SelectionOwner? = null
-    private val selectionOwner get() = _selectionOwner!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,50 +60,45 @@ class CalendarFragment : Fragment() {
 
     }
 
-    private fun setupAdapter(savedInstanceState: Bundle?) {
-        val dateToSelect = if (savedInstanceState != null) {
-            val epoch = savedInstanceState.getLong(SELECTED_DATE)
-            LocalDate.ofEpochDay(epoch)
-        } else {
-            LocalDate.now()
-        }
-        _selectionOwner = object : SelectionOwner(dateToSelect) {
-
-            override fun onSelectionChanged(date: LocalDate) {
-                super.onSelectionChanged(date)
-                binding.dayTimelineView.selectedDateTime = LocalDateTime.of(date, LocalTime.now())
-            }
-
-        }
-
-        val calendarAdapter = CalendarRecyclerViewAdapter(selectionOwner)
-        binding.recyclerView.adapter = calendarAdapter
+    private fun setupAdapter(savedInstanceState: Bundle?) = with(binding) {
+        calendarAdapter.setSelectedDay(
+            getSelectedDay(savedInstanceState)
+        )
+        recyclerView.adapter = calendarAdapter
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                calendarAdapter.submitList(monthList) {
-                    calendarAdapter.removeSelection()
-                }
+                calendarAdapter.submitList(monthList)
             }
         }
 
-        binding.recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
+        recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
+
+    private fun getSelectedDay(savedState: Bundle?) =
+        if (savedState != null) {
+            LocalDate.ofEpochDay(savedState.getLong(SELECTED_DATE))
+        } else {
+            LocalDate.now()
+        }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putLong(
             SELECTED_DATE,
-            selectionOwner.selectedDate.toEpochDay()
+            binding.dayTimelineView.selectedDateTime.toLocalDate().toEpochDay()
         )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        _selectionOwner = null
+    }
+
+    override fun onSelect(day: LocalDate) = with(binding) {
+        dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
     }
 
     companion object {

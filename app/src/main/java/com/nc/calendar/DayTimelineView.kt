@@ -8,7 +8,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
-import com.nc.calendar.Constants.locale
+import com.nc.calendar.Constants.getLocale
 import java.time.LocalDateTime
 
 class DayTimelineView @JvmOverloads constructor(
@@ -20,6 +20,9 @@ class DayTimelineView @JvmOverloads constructor(
     private val spaceBetweenHorizontalSeparators = 100f
     private val verticalLineOffset = 130f
     private val lineCount = 24
+    private val separatorWidth = 1f
+    private val currentTimelineWidth = 2f
+    private val currentTimelineCircleRadius = 10f
     private val horizontalLineBeyondVerticalExtension = 15
     private val verticalLineStartX = verticalLineOffset - horizontalLineBeyondVerticalExtension
     private val textStartX = verticalLineOffset / 2
@@ -37,19 +40,18 @@ class DayTimelineView @JvmOverloads constructor(
     private val isCurrentDay
         get() = today.toLocalDate() == selectedDateTime.toLocalDate()
     private val currentTimeLineOffset = calculateCurrentTimeLineOffset()
-    private val currentTimeLineCircleRadius = 10f
     private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
 
     private val separatorPaint = Paint().apply {
         color = resources.getColor(R.color.md_theme_secondary, context.theme)
         style = Paint.Style.STROKE
-        strokeWidth = 1f
+        strokeWidth = separatorWidth
     }
 
     private val currentTimePaint = Paint().apply {
         color = resources.getColor(R.color.md_theme_primary, context.theme)
         style = Paint.Style.FILL
-        strokeWidth = 2f
+        strokeWidth = currentTimelineWidth
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -62,30 +64,30 @@ class DayTimelineView @JvmOverloads constructor(
     private val linePath = Path().apply {
         repeat(lineCount) {
             this.moveTo(ZERO_POSITION_F, spaceBetweenHorizontalSeparators * it)
-            this.lineTo(width * 1f, spaceBetweenHorizontalSeparators * it)
+            this.lineTo(width.toFloat(), spaceBetweenHorizontalSeparators * it)
         }
     }
 
-    private val timeList = (TIMELINE_START..TIMELINE_END).map {
-        String.format(locale, TIME_FORMAT_PATTERN, it)
+    private val timeList = (TIME_LIST_START..TIME_LIST_END).map {
+        String.format(getLocale(), TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        for (index in 0..<lineCount) {
+        for (index in TIMELINE_START..<lineCount) {
             linePath.moveTo(
                 verticalLineStartX,
                 (spaceBetweenHorizontalSeparators * index)
             )
             linePath.lineTo(
-                width * 1f,
+                width.toFloat(),
                 (spaceBetweenHorizontalSeparators * index)
             )
             canvas.drawPath(linePath, separatorPaint)
         }
 
-        for (index in 1..<lineCount) {
+        for (index in TIMELINE_START..<lineCount) {
             canvas.drawText(
                 timeList[index],
                 textStartX,
@@ -106,14 +108,14 @@ class DayTimelineView @JvmOverloads constructor(
             canvas.drawLine(
                 verticalLineOffset,
                 currentTimeLineOffset,
-                width * 1f,
+                width.toFloat(),
                 currentTimeLineOffset,
                 currentTimePaint
             )
             canvas.drawCircle(
                 verticalLineOffset,
                 currentTimeLineOffset,
-                currentTimeLineCircleRadius,
+                currentTimelineCircleRadius,
                 currentTimePaint
             )
         }
@@ -133,9 +135,10 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     companion object {
-        const val TIMELINE_START = 0
-        const val TIMELINE_END = 23
-        const val MINUTE_IN_HOUR = 60
-        const val ZERO_POSITION_F = 0f
+        private const val TIMELINE_START = 1
+        private const val TIME_LIST_START = 0
+        private const val TIME_LIST_END = 23
+        private const val MINUTE_IN_HOUR = 60
+        private const val ZERO_POSITION_F = 0f
     }
 }

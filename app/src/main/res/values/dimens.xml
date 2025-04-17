@@ -23,4 +23,5 @@
     <dimen name="small_icon_size">8dp</dimen>
     <dimen name="large_padding">30dp</dimen>
     <dimen name="large_extra_space">40dp</dimen>
+    <dimen name="item_weight">1</dimen>
 </resources>
