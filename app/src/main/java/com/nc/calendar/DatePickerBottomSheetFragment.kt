@@ -6,17 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
-import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
-import com.nc.calendar.databinding.FragmentDatePickerBottomSheetBinding
-import com.nc.calendar.databinding.MonthChipBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
+import com.nc.calendar.Constants.YEAR_FORMAT_PATTERN
+import com.nc.calendar.Constants.locale
+import com.nc.calendar.databinding.FragmentDatePickerBottomSheetBinding
+import com.nc.calendar.databinding.MonthChipBinding
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 
 class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
     private lateinit var selectedDate: MutableStateFlow<LocalDate>
@@ -45,7 +48,7 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
         lifecycleScope.launch {
             selectedDate.collect { selectedDate ->
                 binding.selectedMonth.text = selectedDate.month.format()
-                binding.selectedYear.text = selectedDate.year.toString()
+                binding.selectedYear.text = String.format(selectedDate.year.toString())
             }
         }
 
@@ -108,7 +111,10 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
     }
 }
 
-fun Month.format(): String {
-    return DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN).format(this)
-        .replaceFirstChar { it.titlecase() }
-}
+fun Month.format() = DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN).format(this)
+    .replaceFirstChar { it.titlecase() }
+
+fun Month.formatShort() = this.getDisplayName(TextStyle.SHORT, locale)
+    .replaceFirstChar { it.titlecase() }
+
+fun LocalDate.formatYear(): String = DateTimeFormatter.ofPattern(YEAR_FORMAT_PATTERN).format(this)

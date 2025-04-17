@@ -9,15 +9,13 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.nc.calendar.Constants.today
 import com.nc.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
 import com.nc.calendar.databinding.FragmentCalendarBinding
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.Month
-import java.time.format.TextStyle
-
 
 class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
@@ -36,21 +34,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter(savedInstanceState)
-
-        binding.currentDate.setOnClickListener {
-            DatePickerBottomSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putLong(DIALOG_RESULT_KEY, viewModel.selectedDate.value.toEpochDay())
-                }
-            }.show(parentFragmentManager, DIALOG_TAG)
-        }
-
-        lifecycleScope.launch {
-            viewModel.selectedDate.collect { date ->
-                binding.month.text = date.month.format()
-                binding.year.text = date.year.toString()
-            }
-        }
+        setupCurrentDateField()
 
         setFragmentResultListener(DatePickerBottomSheetFragment.DIALOG_REQUEST_KEY) { _, bundle ->
             val result = bundle.getLong(DIALOG_RESULT_KEY)
@@ -68,13 +52,37 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
 
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
-                calendarAdapter.submitList(monthList)
+                calendarAdapter.submitList(monthList) {
+                    calendarAdapter.removeSelection()
+                }
             }
         }
 
         recyclerView.scrollToPosition(CENTER_OF_FIVE_WEEKS_LIST)
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
+    }
+
+    private fun setupCurrentDateField() = with(binding) {
+        currentDate.setOnClickListener {
+            DatePickerBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(DIALOG_RESULT_KEY, viewModel.selectedDate.value.toEpochDay())
+                }
+            }.show(parentFragmentManager, DIALOG_TAG)
+        }
+
+        lifecycleScope.launch {
+            viewModel.selectedDate.collect { date ->
+                if (date.year == today.year) {
+                    month.text = date.month.format()
+                    year.text = ""
+                } else {
+                    month.text = date.month.formatShort()
+                    year.text = date.formatYear()
+                }
+            }
+        }
     }
 
     private fun getSelectedDay(savedState: Bundle?) =

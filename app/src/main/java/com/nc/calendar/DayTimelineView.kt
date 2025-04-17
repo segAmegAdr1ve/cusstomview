@@ -8,7 +8,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
-import com.nc.calendar.Constants.getLocale
+import com.nc.calendar.Constants.locale
 import java.time.LocalDateTime
 
 class DayTimelineView @JvmOverloads constructor(
@@ -69,7 +69,7 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     private val timeList = (TIME_LIST_START..TIME_LIST_END).map {
-        String.format(getLocale(), TIME_FORMAT_PATTERN, it)
+        String.format(locale, TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {

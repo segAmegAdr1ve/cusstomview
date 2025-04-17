@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.nc.calendar.Constants.DAYS_IN_WEEK
-import com.nc.calendar.Constants.getLocale
+import com.nc.calendar.Constants.locale
 import com.nc.calendar.databinding.DayItemBinding
 import com.nc.calendar.databinding.RecyclerViewCalendarItemBinding
 import java.time.LocalDate
@@ -61,7 +61,7 @@ class CalendarRecyclerViewAdapter(
         ) = with(dayBinding) {
             root.tag = day
             dayOfMonth.text = String.format(day.dayOfMonth.toString())
-            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, getLocale())
+            dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             currentDayMarker.isVisible = day.isEqual(today)
             setSelectedDay(day = day, dayBinding = dayBinding)
             dayLayout.setOnClickListener { view ->
