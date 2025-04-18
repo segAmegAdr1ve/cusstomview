@@ -30,4 +30,11 @@
         <item name="android:fontFamily">@font/source_sans_pro</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
+
+    <style name="TextAppearance.MdcTypographyStyles.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/extra_small_text_size</item>
+    </style>
 </resources>

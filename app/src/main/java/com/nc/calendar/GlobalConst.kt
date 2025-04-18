@@ -9,6 +9,7 @@ object Constants {
     const val TIME_FORMAT_PATTERN = "%02d:00"
     const val NOMINATIVE_MONTH_FORMAT_PATTERN = "LLLL"
     const val YEAR_FORMAT_PATTERN = "YYYY г."
+    const val DAY_FORMAT_PATTERN = "dd"
     val locale: Locale by lazy { Locale.getDefault() }
     val today: LocalDate by lazy { LocalDate.now() }
 }

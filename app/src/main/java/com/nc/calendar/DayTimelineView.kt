@@ -7,15 +7,28 @@ import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
 import com.nc.calendar.Constants.locale
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class DayTimelineView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet?,
+    attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+    private var _backgroundColor: Int = Color.White.toArgb()
+    private var _onBackgroundColor: Int = Color.Black.toArgb()
+    fun setColors(
+        backgroundColor: Color = Color.White,
+        onBackgroundColor: Color = Color.Black
+    ) {
+        _backgroundColor = backgroundColor.toArgb()
+        _onBackgroundColor = onBackgroundColor.toArgb()
+        setBackgroundColor(_backgroundColor)
+    }
 
     private val spaceBetweenHorizontalSeparators = 100f
     private val verticalLineOffset = 130f
@@ -31,31 +44,29 @@ class DayTimelineView @JvmOverloads constructor(
         get() = spaceBetweenHorizontalSeparators * lineCount
 
     private val today: LocalDateTime = LocalDateTime.now()
-    var selectedDateTime: LocalDateTime = today
-        set(value) {
-            field = value
-            currentDayOfMonth = selectedDateTime.dayOfMonth
-            invalidate()
-        }
+    private var selectedDateTime: LocalDateTime = today
+    fun setDate(date: LocalDate) {
+        selectedDateTime = LocalDateTime.of(date, today.toLocalTime())
+        invalidate()
+    }
     private val isCurrentDay
         get() = today.toLocalDate() == selectedDateTime.toLocalDate()
     private val currentTimeLineOffset = calculateCurrentTimeLineOffset()
-    private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
 
     private val separatorPaint = Paint().apply {
-        color = resources.getColor(R.color.md_theme_secondary, context.theme)
+        color = _onBackgroundColor
         style = Paint.Style.STROKE
         strokeWidth = separatorWidth
     }
 
     private val currentTimePaint = Paint().apply {
-        color = resources.getColor(R.color.md_theme_primary, context.theme)
+        color = _onBackgroundColor
         style = Paint.Style.FILL
         strokeWidth = currentTimelineWidth
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = resources.getColor(R.color.md_theme_secondary, context.theme)
+        color = _onBackgroundColor
         typeface = Typeface.MONOSPACE
         textSize = resources.getDimension(R.dimen.medium_text_size)
         textAlign = Paint.Align.CENTER
