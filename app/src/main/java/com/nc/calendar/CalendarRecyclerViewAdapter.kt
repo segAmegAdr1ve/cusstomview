@@ -1,5 +1,6 @@
 package com.nc.calendar
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +13,27 @@ import com.nc.calendar.Constants.DAYS_IN_WEEK
 import com.nc.calendar.Constants.locale
 import com.nc.calendar.databinding.DayItemBinding
 import com.nc.calendar.databinding.RecyclerViewCalendarItemBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.TextStyle
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 
 class CalendarRecyclerViewAdapter(
     private val listener: Listener
 ) : ListAdapter<LocalDate, CalendarRecyclerViewAdapter.CalendarViewHolder>(diffCallback) {
 
     private val today = LocalDate.now()
-    private var selectedDay: LocalDate? = null
+    private var lastSelectedDay: LocalDate = today
     private var selectedView: DayItemBinding? = null
 
-    fun removeSelection() {
+    fun clearVisibleSelectedDay() {
         clearSelectedDay()
     }
 
@@ -59,34 +69,29 @@ class CalendarRecyclerViewAdapter(
             dayBinding: DayItemBinding,
             day: LocalDate
         ) = with(dayBinding) {
-            root.tag = day
+            if (lastSelectedDay == day) {
+                setLastSelectedDay(day = day, dayBinding = dayBinding)
+            }
             dayOfMonth.text = String.format(day.dayOfMonth.toString())
             dayOfWeek.text = day.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             currentDayMarker.isVisible = day.isEqual(today)
-            setSelectedDay(day = day, dayBinding = dayBinding)
-            dayLayout.setOnClickListener { view ->
-                selectedDay = view.tag as? LocalDate
-                selectedDay?.let {
-                    setSelectedDay(day = day, dayBinding = dayBinding)
-                }
+            dayLayout.setOnClickListener {
+                setLastSelectedDay(day = day, dayBinding = dayBinding)
             }
         }
     }
 
-    fun setSelectedDay(day: LocalDate) {
-        selectedDay = day
+    fun setLastSelectedDay(day: LocalDate) {
+        lastSelectedDay = day
     }
 
-    private fun setSelectedDay(day: LocalDate, dayBinding: DayItemBinding) {
-        selectedDay?.let {
-            if (it == day) {
-                clearSelectedDay()
-                listener.onSelect(it)
-                selectedView = dayBinding.apply {
-                    selectedBackground.visibility = View.VISIBLE
-                    dayOfMonth.isSelected = true
-                }
-            }
+    private fun setLastSelectedDay(day: LocalDate, dayBinding: DayItemBinding) {
+        clearSelectedDay()
+        lastSelectedDay = day
+        listener.onSelect(lastSelectedDay)
+        selectedView = dayBinding.apply {
+            selectedBackground.visibility = View.VISIBLE
+            dayOfMonth.isSelected = true
         }
     }
 
@@ -96,7 +101,6 @@ class CalendarRecyclerViewAdapter(
             view.dayOfMonth.isSelected = false
             selectedView = null
         }
-        selectedDay = null
     }
 
     interface Listener {
@@ -115,3 +119,38 @@ class CalendarRecyclerViewAdapter(
         }
     }
 }
+
+suspend fun main() {
+    var counter = 0
+    var counterA = AtomicInteger(0)
+    massiveRun { counter++ }
+    massiveRun { counterA.incrementAndGet() }
+    println(counter)
+    println(counterA)
+}
+suspend fun massiveRun(action: suspend () -> Unit) {
+    withContext(Dispatchers.Default) {
+        val mutex = Mutex()
+
+        repeat(100) {
+            launch {
+                mutex.withLock {
+                    repeat(100) { action() }
+                }
+            }
+        }
+    }
+}
+/*fun main() {
+    var counter = 0
+    var listOfThreads: MutableList<Thread> = emptyList<Thread>().toMutableList()
+    repeat(1000) {
+        listOfThreads.add(
+            thread {
+                counter++
+            }
+        )
+    }
+    //listOfThreads.forEach {it.join()}
+    println(counter)
+}*/

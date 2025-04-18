@@ -26,6 +26,7 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
     private var _binding: FragmentDatePickerBottomSheetBinding? = null
     private val binding get() = _binding!!
     private var selectedChip: Chip? = null
+    private var selectedChipId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +70,19 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
                 root.id = View.generateViewId()
                 root.tag = month
                 root.text = month.format()
-                root.setOnCheckedChangeListener { chip, isChecked ->
-                    selectedChip?.isChecked = false
-                    selectedChip = if (isChecked) chip as Chip
-                    else null
+                root.setOnCheckedChangeListener { _chip, isChecked ->
+                    val chip = _chip as Chip
+                    selectedChip = if (isChecked) {
+                        selectedChipId = chip.id
+                        selectedChip?.isChecked = false
+                        chip
+                    } else if (selectedChipId == chip.id) {
+                        selectedChip?.isChecked = true
+                        chip
+                    } else {
+                        null
+                    }
+                    selectedChipId = selectedChip?.id
                     selectedDate.update { date ->
                         date.withMonth(month.value)
                     }
@@ -90,7 +100,6 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
         binding.arrowBack.setOnClickListener {
             selectedDate.update { it.plusMonths(-1) }
         }
-
         binding.select.setOnClickListener {
             setFragmentResult(DIALOG_REQUEST_KEY, Bundle().apply {
                 putLong(DIALOG_RESULT_KEY, selectedDate.value.toEpochDay())
