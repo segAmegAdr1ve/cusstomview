@@ -93,6 +93,11 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
                 }
             }
         }
+        goToCurrentDay.setOnClickListener {
+            viewModel.onSelectedDateChanged(newDate = viewModel.today)
+        }
+
+        currentDayBadge.text = viewModel.today.formatDay()
     }
 
     override fun onDestroyView() {

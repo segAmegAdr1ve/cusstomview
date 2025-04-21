@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/medium_extra_space"
         android:background="?android:attr/selectableItemBackground"
+        android:paddingVertical="@dimen/small_extra_space"
         android:paddingStart="@dimen/small_extra_space"
-        android:paddingTop="@dimen/small_extra_space"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -40,6 +40,35 @@
             android:src="@drawable/baseline_arrow_drop_down_24"
             app:tint="?attr/colorOnSurface" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/go_to_current_day"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="@dimen/match_constraints"
+        android:layout_marginStart="@dimen/small_extra_space"
+        android:backgroundTint="?attr/colorSurface"
+        android:padding="@dimen/extra_small_padding"
+        android:scaleType="centerCrop"
+        android:src="@drawable/calendar_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/current_date"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toEndOf="@id/current_date"
+        app:layout_constraintTop_toTopOf="@id/current_date"
+        app:tint="?attr/colorOnSurface" />
+
+    <TextView
+        android:id="@+id/current_day_badge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_background"
+        android:elevation="@dimen/extra_small_padding"
+        android:padding="@dimen/cardview_compat_inset_shadow"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.LabelSmall"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/go_to_current_day"
+        app:layout_constraintTop_toTopOf="@id/go_to_current_day"
+        tools:text="21" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

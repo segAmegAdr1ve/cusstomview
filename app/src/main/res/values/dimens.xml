@@ -15,6 +15,7 @@
     <dimen name="medium_2_text_size">18sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="small_text_size">12sp</dimen>
+    <dimen name="extra_small_text_size">10sp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="extra_small_padding">4dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>

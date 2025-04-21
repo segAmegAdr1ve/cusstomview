@@ -12,14 +12,15 @@ import java.time.LocalDate
 
 class CalendarViewModel : ViewModel() {
     private val calendarHelper = CalendarHelper()
+    val today: LocalDate = LocalDate.now()
 
-    private val _lastSelectedDay = MutableStateFlow(LocalDate.now())
+    private val _lastSelectedDay = MutableStateFlow(today)
     val lastSelectedDay = _lastSelectedDay.asStateFlow()
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
+    private val _selectedDate = MutableStateFlow(today)
     var selectedDate = _selectedDate.asStateFlow()
-    private val _currentMonth: MutableStateFlow<List<LocalDate>> =
-        MutableStateFlow(fetchCurrentMonthList())
+
+    private val _currentMonth = MutableStateFlow(fetchCurrentMonthList())
     val currentMonth = _currentMonth.asStateFlow()
 
     fun onSelectedDateChanged(newDate: LocalDate) {

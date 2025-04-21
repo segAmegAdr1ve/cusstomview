@@ -8,6 +8,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.nc.calendar.Constants.DAY_FORMAT_PATTERN
 import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
 import com.nc.calendar.Constants.YEAR_FORMAT_PATTERN
 import com.nc.calendar.Constants.locale
@@ -127,3 +128,5 @@ fun Month.formatShort() = this.getDisplayName(TextStyle.SHORT, locale)
     .replaceFirstChar { it.titlecase() }
 
 fun LocalDate.formatYear(): String = DateTimeFormatter.ofPattern(YEAR_FORMAT_PATTERN).format(this)
+
+fun LocalDate.formatDay(): String = DateTimeFormatter.ofPattern(DAY_FORMAT_PATTERN).format(this)
