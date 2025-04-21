@@ -1,12 +1,10 @@
 package com.nc.calendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nc.calendar.Constants.DAYS_IN_WEEK
 import com.nc.calendar.helper.CalendarHelper
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,15 +21,6 @@ class CalendarViewModel : ViewModel() {
     private val _currentMonth: MutableStateFlow<List<LocalDate>> =
         MutableStateFlow(fetchCurrentMonthList())
     val currentMonth = _currentMonth.asStateFlow()
-    init {
-        GlobalScope.launch {
-            repeat(100) {
-                Log.d("TAG", "VM: ${_selectedDate.value}")
-                Log.d("TAG", "VM List: ${currentMonth.value}")
-                delay(1000)
-            }
-        }
-    }
 
     fun onSelectedDateChanged(newDate: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -52,9 +41,11 @@ class CalendarViewModel : ViewModel() {
 
     fun calculatePositionToScroll(): Int {
         currentMonth.value.indexOf(lastSelectedDay.value).let { index ->
-            Log.d("calc", "${(index - 1) / 7}")
-            if (index == -1) return 0
-            return (index - 1) / 7
+            return if (index == NO_SELECTED_DAY) {
+                LIST_START
+            } else {
+                index / DAYS_IN_WEEK
+            }
         }
     }
 
@@ -62,4 +53,8 @@ class CalendarViewModel : ViewModel() {
         return calendarHelper.createListOfDaysFromToday()
     }
 
+    companion object {
+        const val NO_SELECTED_DAY = -1
+        const val LIST_START = 0
+    }
 }

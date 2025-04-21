@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.nc.calendar.Constants.today
 import com.nc.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
 import com.nc.calendar.databinding.FragmentCalendarBinding
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -29,12 +29,12 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
+        setupAdapter()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAdapter()
         setupCurrentDateField()
 
         setFragmentResultListener(DatePickerBottomSheetFragment.DIALOG_REQUEST_KEY) { _, bundle ->
@@ -58,13 +58,17 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         lifecycleScope.launch {
             viewModel.currentMonth.collect { monthList ->
                 calendarAdapter.clearVisibleSelectedDay()
-                calendarAdapter.submitList(monthList)
-                delay(500)
-                recyclerView.scrollToPosition(viewModel.calculatePositionToScroll())
+                calendarAdapter.submitList(monthList) {
+                    recyclerView.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.down_from_top
+                        )
+                    )
+                    recyclerView.scrollToPosition(viewModel.calculatePositionToScroll())
+                }
             }
         }
-
-        recyclerView.scrollToPosition(viewModel.calculatePositionToScroll())
         val pagerSnapHelper = PagerSnapHelper()
         pagerSnapHelper.attachToRecyclerView(binding.recyclerView)
     }
@@ -99,7 +103,6 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     override fun onSelect(day: LocalDate) = viewModel.setLastSelectedDay(day)
 
     companion object {
-        private const val CENTER_OF_FIVE_WEEKS_LIST = 2
         private const val DIALOG_TAG = "DIALOG_TAG"
     }
 }

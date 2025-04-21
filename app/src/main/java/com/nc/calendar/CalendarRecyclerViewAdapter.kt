@@ -1,6 +1,5 @@
 package com.nc.calendar
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +12,8 @@ import com.nc.calendar.Constants.DAYS_IN_WEEK
 import com.nc.calendar.Constants.locale
 import com.nc.calendar.databinding.DayItemBinding
 import com.nc.calendar.databinding.RecyclerViewCalendarItemBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.concurrent.thread
 
 class CalendarRecyclerViewAdapter(
     private val listener: Listener
@@ -119,38 +109,3 @@ class CalendarRecyclerViewAdapter(
         }
     }
 }
-
-suspend fun main() {
-    var counter = 0
-    var counterA = AtomicInteger(0)
-    massiveRun { counter++ }
-    massiveRun { counterA.incrementAndGet() }
-    println(counter)
-    println(counterA)
-}
-suspend fun massiveRun(action: suspend () -> Unit) {
-    withContext(Dispatchers.Default) {
-        val mutex = Mutex()
-
-        repeat(100) {
-            launch {
-                mutex.withLock {
-                    repeat(100) { action() }
-                }
-            }
-        }
-    }
-}
-/*fun main() {
-    var counter = 0
-    var listOfThreads: MutableList<Thread> = emptyList<Thread>().toMutableList()
-    repeat(1000) {
-        listOfThreads.add(
-            thread {
-                counter++
-            }
-        )
-    }
-    //listOfThreads.forEach {it.join()}
-    println(counter)
-}*/
