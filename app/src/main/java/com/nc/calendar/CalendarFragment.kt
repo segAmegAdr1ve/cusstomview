@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.nc.calendar.Constants.today
 import com.nc.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
@@ -59,13 +59,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             viewModel.currentMonth.collect { monthList ->
                 calendarAdapter.clearVisibleSelectedDay()
                 calendarAdapter.submitList(monthList) {
-                    recyclerView.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            requireContext(),
-                            R.anim.down_from_top
-                        )
-                    )
-                    recyclerView.scrollToPosition(viewModel.calculatePositionToScroll())
+                    recyclerView.smoothScrollToPosition(viewModel.calculatePositionToScroll())
                 }
             }
         }
@@ -94,7 +88,18 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
             }
         }
         goToCurrentDay.setOnClickListener {
-            viewModel.onSelectedDateChanged(newDate = viewModel.today)
+            if (viewModel.lastSelectedDay.value != viewModel.today ||
+                viewModel.selectedDate.value.month != viewModel.today.month
+            ) {
+                viewModel.onSelectedDateChanged(newDate = viewModel.today)
+                viewModel.setLastSelectedDay(viewModel.today)
+                calendarAdapter.notifyDataSetChanged()
+            }
+            val visiblePosition =
+                (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            if (visiblePosition != viewModel.calculatePositionToScroll()) {
+                binding.recyclerView.smoothScrollToPosition(viewModel.calculatePositionToScroll())
+            }
         }
 
         currentDayBadge.text = viewModel.today.formatDay()

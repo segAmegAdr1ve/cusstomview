@@ -32,10 +32,6 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun setSelectedDate(date: LocalDate) {
-        _selectedDate.value = date
-    }
-
     fun setLastSelectedDay(day: LocalDate) {
         _lastSelectedDay.value = day
     }
