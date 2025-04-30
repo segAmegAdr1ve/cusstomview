@@ -32,6 +32,7 @@
 
     <TextView
         android:id="@+id/selected_year"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/small_extra_space"
@@ -84,10 +85,10 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/medium_extra_space"
         android:layout_marginTop="@dimen/drag_handle_top_extra_space"
-        android:backgroundTint="?attr/colorTertiary"
+        android:backgroundTint="?attr/colorPrimaryVariant"
         android:text="@string/select_button_text"
         android:textAppearance="@style/TextAppearance.MdcTypographyStyles.HeadlineMedium"
-        android:textColor="?attr/colorOnSecondary"
+        android:textColor="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

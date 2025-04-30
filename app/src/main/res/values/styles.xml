@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NumberPickerStyle" parent="AppTheme" >
+        <item name="fontFamily">@font/rubik</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textSize">@dimen/medium_2_text_size</item>
+        <item name="android:colorControlNormal">?attr/colorSecondary</item>
+    </style>
+</resources>

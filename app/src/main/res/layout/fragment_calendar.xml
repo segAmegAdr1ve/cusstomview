@@ -41,34 +41,27 @@
             app:tint="?attr/colorOnSurface" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/go_to_current_day"
-        android:layout_width="@dimen/match_constraints"
-        android:layout_height="@dimen/match_constraints"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/go_to_current_day_card"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="@dimen/small_extra_space"
-        android:backgroundTint="?attr/colorSurface"
-        android:padding="@dimen/extra_small_padding"
-        android:scaleType="centerCrop"
-        android:src="@drawable/calendar_icon"
+        android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/current_date"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/current_date"
         app:layout_constraintTop_toTopOf="@id/current_date"
-        app:tint="?attr/colorOnSurface" />
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall">
 
-    <TextView
-        android:id="@+id/current_day_badge"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_background"
-        android:elevation="@dimen/extra_small_padding"
-        android:padding="@dimen/cardview_compat_inset_shadow"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.MdcTypographyStyles.LabelSmall"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/go_to_current_day"
-        app:layout_constraintTop_toTopOf="@id/go_to_current_day"
-        tools:text="21" />
+        <TextView
+            android:id="@+id/go_to_current_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.HeadlineSmall"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="26" />
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
