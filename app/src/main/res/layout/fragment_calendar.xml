@@ -6,14 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".CalendarFragment">
 
-    <Spinner
-        android:id="@+id/month_spinner"
+    <LinearLayout
+        android:id="@+id/current_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/large_padding"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/medium_extra_space"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingVertical="@dimen/small_extra_space"
+        android:paddingStart="@dimen/small_extra_space"
+        app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
+            tools:text="Апрель" />
+
+        <TextView
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/small_extra_space"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
+            tools:text="2025" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/baseline_arrow_drop_down_24"
+            app:tint="?attr/colorOnSurface" />
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/go_to_current_day_card"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/small_extra_space"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/current_date"
+        app:layout_constraintStart_toEndOf="@id/current_date"
+        app:layout_constraintTop_toTopOf="@id/current_date"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall">
+
+        <TextView
+            android:id="@+id/go_to_current_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.HeadlineSmall"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="26" />
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -24,7 +72,8 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/month_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/current_date"
+        tools:listitem="@layout/recycler_view_calendar_item" />
 
     <ScrollView
         android:layout_width="@dimen/zero"
@@ -37,7 +86,8 @@
         <com.nc.calendar.DayTimelineView
             android:id="@+id/dayTimelineView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/medium_extra_space" />
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

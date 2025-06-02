@@ -5,19 +5,19 @@ import com.nc.calendar.Constants.FIRST_DAY_OF_MONTH
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
+import java.time.Year
 
 class CalendarHelper {
     private val today: LocalDate = LocalDate.now()
-    val selectedDate: LocalDate = today
 
     fun createListOfDaysFromToday(): List<LocalDate> {
         val startDate = today.with(DayOfWeek.MONDAY).minusWeeks(DEFAULT_WEEKS_SUBTRACT)
         return createListOfDays(startDate, DEFAULT_WEEK_NUMBER)
     }
 
-    fun createListForMonth(month: Month): List<LocalDate> {
+    fun createListForMonth(month: Month, year: Int = today.year): List<LocalDate> {
         val firstDayOfSelectedMonth =
-            today.withMonth(month.value).withDayOfMonth(FIRST_DAY_OF_MONTH)
+            today.withMonth(month.value).withYear(year).withDayOfMonth(FIRST_DAY_OF_MONTH)
         val startDate = if (firstDayOfSelectedMonth.dayOfWeek != DayOfWeek.MONDAY) {
             firstDayOfSelectedMonth.with(DayOfWeek.MONDAY)
         } else {

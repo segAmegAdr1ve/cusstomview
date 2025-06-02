@@ -2,26 +2,47 @@ package com.nc.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nc.calendar.Constants.DAYS_IN_WEEK
 import com.nc.calendar.helper.CalendarHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.Month
 
 class CalendarViewModel : ViewModel() {
-    val calendarHelper = CalendarHelper()
+    private val calendarHelper = CalendarHelper()
+    val today: LocalDate = LocalDate.now()
 
-    private val _currentMonth: MutableStateFlow<List<LocalDate>> =
-        MutableStateFlow(fetchCurrentMonthList())
+    private val _lastSelectedDay = MutableStateFlow(today)
+    val lastSelectedDay = _lastSelectedDay.asStateFlow()
+
+    private val _selectedDate = MutableStateFlow(today)
+    var selectedDate = _selectedDate.asStateFlow()
+
+    private val _currentMonth = MutableStateFlow(fetchCurrentMonthList())
     val currentMonth = _currentMonth.asStateFlow()
 
-    fun onSelectedMonthChanged(selectedMonth: Month) {
+    fun onSelectedDateChanged(newDate: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
+            _selectedDate.value = newDate
             _currentMonth.emit(
-                calendarHelper.createListForMonth(month = selectedMonth)
+                calendarHelper.createListForMonth(newDate.month, newDate.year)
             )
+        }
+    }
+
+    fun setLastSelectedDay(day: LocalDate) {
+        _lastSelectedDay.value = day
+    }
+
+    fun calculatePositionToScroll(): Int {
+        currentMonth.value.indexOf(lastSelectedDay.value).let { index ->
+            return if (index == NO_SELECTED_DAY) {
+                LIST_START
+            } else {
+                index / DAYS_IN_WEEK
+            }
         }
     }
 
@@ -29,4 +50,8 @@ class CalendarViewModel : ViewModel() {
         return calendarHelper.createListOfDaysFromToday()
     }
 
+    companion object {
+        const val NO_SELECTED_DAY = -1
+        const val LIST_START = 0
+    }
 }

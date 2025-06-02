@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="match_constraints">0dp</dimen>
+    <dimen name="recycler_view_vertical_padding">4dp</dimen>
+    <dimen name="current_day_marker_bottom_margin">4dp</dimen>
+    <dimen name="change_year_arrow_box">48dp</dimen>
+    <dimen name="change_year_arrow_vertical_extra_space">36dp</dimen>
+    <dimen name="change_year_arrow_right_extra_space">32dp</dimen>
+    <dimen name="drag_handle_top_extra_space">16dp</dimen>
+    <dimen name="medium_extra_space">32dp</dimen>
+    <dimen name="horizontal_flow_gap">25dp</dimen>
+    <dimen name="small_extra_space">8dp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
+    <dimen name="medium_2_text_size">18sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
+    <dimen name="extra_small_text_size">10sp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="extra_small_padding">4dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
@@ -8,5 +23,7 @@
     <dimen name="medium_padding">20dp</dimen>
     <dimen name="small_icon_size">8dp</dimen>
     <dimen name="large_padding">30dp</dimen>
+    <dimen name="large_extra_space">40dp</dimen>
     <dimen name="item_weight">1</dimen>
+    <dimen name="drop_down_height">200dp</dimen>
 </resources>

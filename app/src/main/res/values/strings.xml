@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">cusstomview</string>
+    <string name="app_name">Calendar</string>
+    <string name="empty"/>
     <string name="month_picker_title">Выберите месяц</string>
+    <string name="select_button_text">Выбрать</string>
+    <string name="cancel_button_text">Отмена</string>
 </resources>

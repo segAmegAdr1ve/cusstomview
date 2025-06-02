@@ -2,17 +2,14 @@ package com.nc.calendar
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import com.google.android.material.R.color.material_grey_300
 import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
-import com.nc.calendar.Constants.getLocale
+import com.nc.calendar.Constants.locale
 import java.time.LocalDateTime
-
 
 class DayTimelineView @JvmOverloads constructor(
     context: Context,
@@ -46,22 +43,19 @@ class DayTimelineView @JvmOverloads constructor(
     private var currentDayOfMonth: Int = selectedDateTime.dayOfMonth
 
     private val separatorPaint = Paint().apply {
-        color = resources.getColor(
-            material_grey_300,
-            context.theme
-        )
+        color = resources.getColor(R.color.md_theme_secondary, context.theme)
         style = Paint.Style.STROKE
         strokeWidth = separatorWidth
     }
 
     private val currentTimePaint = Paint().apply {
-        color = Color.BLACK
+        color = resources.getColor(R.color.md_theme_primary, context.theme)
         style = Paint.Style.FILL
         strokeWidth = currentTimelineWidth
     }
 
     private val timePeriodPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLACK
+        color = resources.getColor(R.color.md_theme_secondary, context.theme)
         typeface = Typeface.MONOSPACE
         textSize = resources.getDimension(R.dimen.medium_text_size)
         textAlign = Paint.Align.CENTER
@@ -75,7 +69,7 @@ class DayTimelineView @JvmOverloads constructor(
     }
 
     private val timeList = (TIME_LIST_START..TIME_LIST_END).map {
-        String.format(getLocale(), TIME_FORMAT_PATTERN, it)
+        String.format(locale, TIME_FORMAT_PATTERN, it)
     }
 
     override fun onDraw(canvas: Canvas) {
