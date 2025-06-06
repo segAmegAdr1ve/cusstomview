@@ -1,4 +1,4 @@
-package com.nc.calendar.helper
+package com.nc.calendar.data.helper
 
 import com.nc.calendar.Constants.DAYS_IN_WEEK
 import com.nc.calendar.Constants.FIRST_DAY_OF_MONTH

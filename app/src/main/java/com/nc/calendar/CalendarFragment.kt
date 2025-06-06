@@ -5,19 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.nc.calendar.Constants.TEMPERATURE_C_FORMAT_PATTERN
+import com.nc.calendar.Constants.WEATHER_TIME_FORMAT_PATTERN
+import com.nc.calendar.Constants.locale
 import com.nc.calendar.Constants.today
 import com.nc.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
 import com.nc.calendar.databinding.FragmentCalendarBinding
+import com.nc.calendar.presentation.detailweather.DetailWeatherFragment
+import com.nc.calendar.presentation.detailweather.DetailWeatherFragment.Companion.DATE_ARG_KEY
+import com.nc.calendar.utils.formatPattern
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 
+@AndroidEntryPoint
 class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
     private val calendarAdapter by lazy { CalendarRecyclerViewAdapter(this) }
@@ -36,6 +44,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupCurrentDateField()
+        setupWeather()
 
         setFragmentResultListener(DatePickerBottomSheetFragment.DIALOG_REQUEST_KEY) { _, bundle ->
             val result = bundle.getLong(DIALOG_RESULT_KEY)
@@ -45,13 +54,64 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         }
     }
 
+    private fun setupWeather() {
+        binding.weatherLayout.setOnClickListener {
+            val weatherState = viewModel.weatherState.value as? WeatherState.Loaded
+            if (weatherState != null) {
+                val bundle = Bundle().apply {
+                    putLong(DATE_ARG_KEY, weatherState.data.date.toEpochDay())
+                }
+                parentFragmentManager.commit {
+                    replace<DetailWeatherFragment>(R.id.fragment_container_view, args = bundle)
+                    addToBackStack(null)
+                }
+            }
+
+        }
+
+        lifecycleScope.launch {
+            viewModel.weatherState.collect { state ->
+                with(binding) {
+                    when (state) {
+                        is WeatherState.Loading -> {
+                            progressIndicator.visibility = View.VISIBLE
+                            currentTemperature.visibility = View.GONE
+                            weatherDate.visibility = View.GONE
+                            weatherLayout.isClickable = false
+                        }
+
+                        is WeatherState.Loaded -> {
+                            progressIndicator.visibility = View.GONE
+                            currentTemperature.visibility = View.VISIBLE
+                            weatherDate.visibility = View.VISIBLE
+                            currentTemperature.text =
+                                String.format(locale, TEMPERATURE_C_FORMAT_PATTERN, state.data.midTemp)
+                            weatherDate.text = state.data.date
+                                .formatPattern(WEATHER_TIME_FORMAT_PATTERN)
+                            weatherLayout.isClickable = true
+                        }
+
+                        is WeatherState.Error -> {
+                            progressIndicator.visibility = View.GONE
+                            weatherDate.visibility = View.GONE
+                            currentTemperature.visibility = View.VISIBLE
+                            currentTemperature.text = state.message
+                            weatherLayout.isClickable = false
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     private fun setupAdapter() = with(binding) {
         recyclerView.adapter = calendarAdapter
 
         lifecycleScope.launch {
             viewModel.lastSelectedDay.collect { day ->
                 calendarAdapter.setLastSelectedDay(day)
-                dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
+                //dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
             }
         }
 

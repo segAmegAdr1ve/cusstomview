@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,6 +44,19 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.fragment:fragment-ktx:1.8.6")
 
+    implementation (libs.glide)
+    implementation (libs.converter.gson.v2100)
+    implementation (libs.gson)
+
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    kapt(libs.hilt.compiler)
+
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.squareup.converter.moshi)
+    implementation (libs.logging.interceptor)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

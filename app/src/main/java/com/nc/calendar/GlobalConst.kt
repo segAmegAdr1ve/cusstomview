@@ -10,6 +10,26 @@ object Constants {
     const val NOMINATIVE_MONTH_FORMAT_PATTERN = "LLLL"
     const val YEAR_FORMAT_PATTERN = "YYYY г."
     const val DAY_FORMAT_PATTERN = "dd"
+    const val WEATHER_TIME_FORMAT_PATTERN = "E, d MMM"
+    const val DATE_RESPONSE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm"
+    const val DEFAULT_TIME_FORMAT_PATTERN = "HH:mm"
+    const val TOOL_BAR_FORMAT_PATTERN = "EEEE, dd.MM"
+    const val TEMPERATURE_C_FORMAT_PATTERN = "%d°С"
+    const val TEMPERATURE_FORMAT_PATTERN = "%d°"
+    const val M_PER_SECOND_FORMAT_PATTERN = "%d м/с"
+    const val PERCENT_FORMAT_PATTERN = "%d%%"
+    const val BASE_URL = "https://api.weatherapi.com/v1/"
+    const val API_KEY = "d3126f0bd0eb46229cf94918250206"
+    const val PROTOCOL = "https:"
+    const val DETAIL_WEATHER_INTERVAL = "60"
+    const val DAYS_PER_REQUEST = "1"
+    const val API_FORWARD_DAYS_RESTRICTION = 300L
+    const val API_FORWARD_WEEKS_DETAIL_RESTRICTION = 2L
+    const val API_BACK_DAYS_RESTRICTION = 7L
+    const val DEBOUNCE_DELAY = 350L
+    const val UNKNOWN_ERROR = "unknown error"
+    const val NO_DATA = "Нет данных"
+    const val NO_INTERNET = "Нет интернета"
     val locale: Locale by lazy { Locale.getDefault() }
     val today: LocalDate by lazy { LocalDate.now() }
 }

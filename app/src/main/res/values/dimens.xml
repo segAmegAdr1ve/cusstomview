@@ -8,16 +8,20 @@
     <dimen name="change_year_arrow_vertical_extra_space">36dp</dimen>
     <dimen name="change_year_arrow_right_extra_space">32dp</dimen>
     <dimen name="drag_handle_top_extra_space">16dp</dimen>
-    <dimen name="medium_extra_space">32dp</dimen>
+    <dimen name="medium_space">24dp</dimen>
+    <dimen name="medium_space2">32dp</dimen>
     <dimen name="horizontal_flow_gap">25dp</dimen>
-    <dimen name="small_extra_space">8dp</dimen>
+    <dimen name="small_space">8dp</dimen>
     <dimen name="large_text_size">24sp</dimen>
+    <dimen name="extra_large_text_size">40sp</dimen>
+    <dimen name="huge_text_size">64sp</dimen>
+    <dimen name="medium_large_text_size">32sp</dimen>
     <dimen name="medium_2_text_size">18sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="small_text_size">12sp</dimen>
     <dimen name="extra_small_text_size">10sp</dimen>
     <dimen name="zero">0dp</dimen>
-    <dimen name="extra_small_padding">4dp</dimen>
+    <dimen name="extra_small_space">4dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
     <dimen name="large_card_height">50dp</dimen>
     <dimen name="medium_padding">20dp</dimen>
@@ -26,4 +30,5 @@
     <dimen name="large_extra_space">40dp</dimen>
     <dimen name="item_weight">1</dimen>
     <dimen name="drop_down_height">200dp</dimen>
+    <dimen name="medium_icon_size">40dp</dimen>
 </resources>

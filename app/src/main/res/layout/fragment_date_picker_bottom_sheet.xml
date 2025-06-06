@@ -5,7 +5,7 @@
     android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/medium_extra_space"
+    android:paddingBottom="@dimen/medium_space2"
     tools:context=".DatePickerBottomSheetFragment">
 
     <ImageView
@@ -35,7 +35,7 @@
         style="@style/Widget.AppCompat.Spinner.Underlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/small_extra_space"
+        android:paddingStart="@dimen/small_space"
         android:textAppearance="@style/TextAppearance.MdcTypographyStyles.DisplaySmall"
         app:layout_constraintBottom_toBottomOf="@+id/arrow_forward"
         app:layout_constraintStart_toEndOf="@id/selected_month"
@@ -69,7 +69,7 @@
         android:id="@+id/custom_flow"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_extra_space"
+        android:layout_marginTop="@dimen/medium_space2"
         app:flow_horizontalAlign="start"
         app:flow_horizontalGap="@dimen/horizontal_flow_gap"
         app:flow_horizontalStyle="packed"
@@ -83,7 +83,7 @@
         android:id="@+id/select"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/medium_extra_space"
+        android:layout_marginHorizontal="@dimen/medium_space2"
         android:layout_marginTop="@dimen/drag_handle_top_extra_space"
         android:backgroundTint="?attr/colorPrimaryVariant"
         android:text="@string/select_button_text"
