@@ -47,17 +47,13 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.glide)
     implementation(libs.gson)
-
     implementation(libs.hilt.android)
-    implementation(libs.androidx.legacy.support.v4)
     kapt(libs.hilt.compiler)
-
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)

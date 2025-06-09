@@ -11,20 +11,15 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.nc.calendar.Constants.DAY_FORMAT_PATTERN
-import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
-import com.nc.calendar.Constants.YEAR_FORMAT_PATTERN
-import com.nc.calendar.Constants.locale
 import com.nc.calendar.R
 import com.nc.calendar.databinding.FragmentDatePickerBottomSheetBinding
 import com.nc.calendar.databinding.MonthChipBinding
+import com.nc.calendar.format
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
 
 class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
     private lateinit var selectedDate: MutableStateFlow<LocalDate>
@@ -152,13 +147,3 @@ class DatePickerBottomSheetFragment() : BottomSheetDialogFragment() {
         const val MONTH_STEP = 1L
     }
 }
-
-fun Month.format() = DateTimeFormatter.ofPattern(NOMINATIVE_MONTH_FORMAT_PATTERN).format(this)
-    .replaceFirstChar { it.titlecase() }
-
-fun Month.formatShort() = this.getDisplayName(TextStyle.SHORT, locale)
-    .replaceFirstChar { it.titlecase() }
-
-fun LocalDate.formatYear(): String = DateTimeFormatter.ofPattern(YEAR_FORMAT_PATTERN).format(this)
-
-fun LocalDate.formatDay(): String = DateTimeFormatter.ofPattern(DAY_FORMAT_PATTERN).format(this)

@@ -4,8 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.nc.calendar.BuildConfig
 import com.nc.calendar.Constants.API_KEY_PARAM
-import com.nc.calendar.Constants.BASE_URL
-import com.nc.calendar.Constants.CITY
 import com.nc.calendar.Constants.CITY_PARAM
 import com.nc.calendar.data.network.NoInternetException
 import com.nc.calendar.data.network.WeatherApi
@@ -92,6 +90,11 @@ class NetworkModule {
     @Singleton
     fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    companion object {
+        const val BASE_URL = "https://api.weatherapi.com/v1/"
+        const val CITY = "Ulyanovsk"
     }
 }
 

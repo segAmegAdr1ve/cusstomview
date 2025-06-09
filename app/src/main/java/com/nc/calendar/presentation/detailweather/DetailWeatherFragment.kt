@@ -13,9 +13,9 @@ import com.nc.calendar.Constants.PERCENT_FORMAT_PATTERN
 import com.nc.calendar.Constants.PROTOCOL
 import com.nc.calendar.Constants.TEMPERATURE_FORMAT_PATTERN
 import com.nc.calendar.databinding.FragmentDetailWeatherBinding
+import com.nc.calendar.format
+import com.nc.calendar.formatDayOfWeek
 import com.nc.calendar.presentation.WeatherState
-import com.nc.calendar.utils.format
-import com.nc.calendar.utils.formatDayOfWeek
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate

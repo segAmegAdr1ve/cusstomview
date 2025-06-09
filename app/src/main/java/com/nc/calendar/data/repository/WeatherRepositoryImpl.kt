@@ -3,7 +3,7 @@ package com.nc.calendar.data.repository
 import android.content.Context
 import com.nc.calendar.Constants.API_FORWARD_WEEKS_DETAIL_RESTRICTION
 import com.nc.calendar.R
-import com.nc.calendar.data.model.hourly.toWeatherModel
+import com.nc.calendar.data.model.toWeatherModel
 import com.nc.calendar.data.network.NoInternetException
 import com.nc.calendar.data.network.WeatherApi
 import com.nc.calendar.domain.WeatherRepository

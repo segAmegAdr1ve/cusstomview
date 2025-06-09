@@ -5,7 +5,7 @@ import com.nc.calendar.Constants.DAYS_PARAM
 import com.nc.calendar.Constants.DAYS_PER_REQUEST
 import com.nc.calendar.Constants.DETAIL_WEATHER_INTERVAL
 import com.nc.calendar.Constants.INTERVAL_PARAM
-import com.nc.calendar.data.model.hourly.HourlyWeatherModel
+import com.nc.calendar.data.model.HourlyWeatherModel
 import retrofit2.http.GET
 import retrofit2.http.Query
 

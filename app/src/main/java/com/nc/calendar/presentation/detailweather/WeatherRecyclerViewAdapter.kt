@@ -9,7 +9,7 @@ import com.nc.calendar.Constants.PROTOCOL
 import com.nc.calendar.Constants.TEMPERATURE_FORMAT_PATTERN
 import com.nc.calendar.databinding.RecyclerViewWeatherItemBinding
 import com.nc.calendar.domain.model.Hour
-import com.nc.calendar.utils.format
+import com.nc.calendar.format
 import javax.inject.Inject
 
 class WeatherRecyclerViewAdapter @Inject constructor() :

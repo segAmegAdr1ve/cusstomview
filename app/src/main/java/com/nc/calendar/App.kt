@@ -1,4 +1,4 @@
-package com.nc.calendar.presentation
+package com.nc.calendar
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,4 +1,4 @@
-package com.nc.calendar.data.model.hourly
+package com.nc.calendar.data.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -17,7 +17,6 @@ object Constants {
     const val TEMPERATURE_FORMAT_PATTERN = "%d°"
     const val M_PER_SECOND_FORMAT_PATTERN = "%d м/с"
     const val PERCENT_FORMAT_PATTERN = "%d%%"
-    const val BASE_URL = "https://api.weatherapi.com/v1/"
     const val PROTOCOL = "https:"
     const val DETAIL_WEATHER_INTERVAL = "60"
     const val DAYS_PER_REQUEST = "1"
@@ -30,6 +29,5 @@ object Constants {
     const val API_FORWARD_WEEKS_DETAIL_RESTRICTION = 2L
     const val API_BACK_DAYS_RESTRICTION = 7L
     const val DEBOUNCE_DELAY = 350L
-    const val CITY = "Ulyanovsk"
     val locale: Locale by lazy { Locale.getDefault() }
 }

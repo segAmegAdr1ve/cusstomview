@@ -1,10 +1,10 @@
-package com.nc.calendar.data.model.hourly
+package com.nc.calendar.data.model
 
 import com.google.gson.annotations.SerializedName
 import com.nc.calendar.domain.model.Hour
 import com.nc.calendar.domain.model.WeatherModel
-import com.nc.calendar.utils.formatTime
-import com.nc.calendar.utils.parseDateTime
+import com.nc.calendar.formatTime
+import com.nc.calendar.parseDateTime
 import java.time.Instant
 import java.time.ZoneId
 
