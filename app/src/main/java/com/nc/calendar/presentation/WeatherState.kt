@@ -1,4 +1,4 @@
-package com.nc.calendar
+package com.nc.calendar.presentation
 
 import com.nc.calendar.domain.model.WeatherModel
 

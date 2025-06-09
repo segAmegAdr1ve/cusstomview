@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/medium_space2"
-    tools:context=".DatePickerBottomSheetFragment">
+    tools:context=".presentation.calendar.DatePickerBottomSheetFragment">
 
     <ImageView
         android:id="@+id/imageView3"

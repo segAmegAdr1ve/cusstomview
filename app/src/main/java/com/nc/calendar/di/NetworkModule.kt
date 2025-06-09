@@ -1,26 +1,37 @@
 package com.nc.calendar.di
 
-import com.nc.calendar.Constants.API_KEY
+import android.content.Context
+import android.net.ConnectivityManager
+import com.nc.calendar.BuildConfig
+import com.nc.calendar.Constants.API_KEY_PARAM
 import com.nc.calendar.Constants.BASE_URL
-import com.nc.calendar.data.WeatherApi
+import com.nc.calendar.Constants.CITY
+import com.nc.calendar.Constants.CITY_PARAM
+import com.nc.calendar.data.network.NoInternetException
+import com.nc.calendar.data.network.WeatherApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDate
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 class NetworkModule {
 
     @Provides
+    @Singleton
     fun provideWeatherApi(retrofit: Retrofit): WeatherApi = retrofit.create(WeatherApi::class.java)
 
     @Provides
+    @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
@@ -28,23 +39,70 @@ class NetworkModule {
         .build()
 
     @Provides
-    fun provideClient(): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
-        .addInterceptor { chain ->
+    @Singleton
+    fun provideClient(
+        @LoggingInterceptor loggingInterceptor: Interceptor,
+        @NetworkStateInterceptor networkStateInterceptor: Interceptor,
+        @QueryInterceptor queryInterceptor: Interceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(networkStateInterceptor)
+        .addInterceptor(queryInterceptor)
+        .build()
+
+    @Provides
+    @QueryInterceptor
+    @Singleton
+    fun provideQueryInterceptor(): Interceptor {
+        return Interceptor { chain ->
             val request = chain.request()
             val newUrl = request.url.newBuilder()
-                .addQueryParameter("q", "Ulyanovsk")
-                .addQueryParameter("key", API_KEY)
+                .addQueryParameter(CITY_PARAM, CITY)
+                .addQueryParameter(API_KEY_PARAM, BuildConfig.API_KEY)
                 .build()
             val newRequest = request.newBuilder()
                 .url(newUrl)
                 .build()
             chain.proceed(newRequest)
         }
-        .build()
+    }
+
+    @LoggingInterceptor
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): Interceptor {
+        return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT).apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
+
+    @NetworkStateInterceptor
+    @Provides
+    @Singleton
+    fun provideNetworkStateInterceptor(connectivityManager: ConnectivityManager): Interceptor {
+        return Interceptor { chain ->
+            if (connectivityManager.activeNetwork == null) {
+                throw NoInternetException()
+            }
+            chain.proceed(chain.request())
+        }
+    }
 
     @Provides
-    fun provideToday(): LocalDate = LocalDate.now()
+    @Singleton
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class QueryInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LoggingInterceptor
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NetworkStateInterceptor

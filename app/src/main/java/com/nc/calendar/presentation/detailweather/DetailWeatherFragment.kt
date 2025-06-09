@@ -12,8 +12,8 @@ import com.nc.calendar.Constants.M_PER_SECOND_FORMAT_PATTERN
 import com.nc.calendar.Constants.PERCENT_FORMAT_PATTERN
 import com.nc.calendar.Constants.PROTOCOL
 import com.nc.calendar.Constants.TEMPERATURE_FORMAT_PATTERN
-import com.nc.calendar.WeatherState
 import com.nc.calendar.databinding.FragmentDetailWeatherBinding
+import com.nc.calendar.presentation.WeatherState
 import com.nc.calendar.utils.format
 import com.nc.calendar.utils.formatDayOfWeek
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +32,7 @@ class DetailWeatherFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val epoch = arguments?.getLong(DATE_ARG_KEY) ?: throw IllegalArgumentException()
+        val epoch = requireArguments().getLong(DATE_ARG_KEY)
         if (savedInstanceState == null) viewModel.getWeatherByDate(LocalDate.ofEpochDay(epoch))
     }
 
@@ -48,7 +48,7 @@ class DetailWeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbar.setNavigationOnClickListener {
-            activity?.onBackPressedDispatcher?.onBackPressed()
+            parentFragmentManager.popBackStack()
         }
 
         lifecycleScope.launch {

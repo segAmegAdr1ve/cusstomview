@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.nc.calendar.Constants
 import com.nc.calendar.Constants.PROTOCOL
+import com.nc.calendar.Constants.TEMPERATURE_FORMAT_PATTERN
 import com.nc.calendar.databinding.RecyclerViewWeatherItemBinding
 import com.nc.calendar.domain.model.Hour
 import com.nc.calendar.utils.format
@@ -29,7 +29,7 @@ class WeatherRecyclerViewAdapter @Inject constructor() :
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int): Unit =
         with(holder.binding) {
             time.text = hourList[position].time
-            temp.text = hourList[position].temp.format(Constants.TEMPERATURE_FORMAT_PATTERN)
+            temp.text = hourList[position].temp.format(TEMPERATURE_FORMAT_PATTERN)
             Glide.with(root)
                 .load("$PROTOCOL${hourList[position].iconUrl}")
                 .into(icon)

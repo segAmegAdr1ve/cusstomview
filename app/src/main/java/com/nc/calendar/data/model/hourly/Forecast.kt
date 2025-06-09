@@ -1,5 +1,8 @@
 package com.nc.calendar.data.model.hourly
 
+import com.google.gson.annotations.SerializedName
+
 data class Forecast(
-    val forecastday: List<Forecastday>
+    @SerializedName(value = "forecastday")
+    val forecastDay: List<Forecastday>
 )

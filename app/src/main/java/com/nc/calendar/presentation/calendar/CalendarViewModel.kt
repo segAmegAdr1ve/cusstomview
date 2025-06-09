@@ -1,25 +1,25 @@
-package com.nc.calendar
+package com.nc.calendar.presentation.calendar
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nc.calendar.Constants
 import com.nc.calendar.Constants.API_BACK_DAYS_RESTRICTION
 import com.nc.calendar.Constants.API_FORWARD_DAYS_RESTRICTION
-import com.nc.calendar.Constants.DAYS_IN_WEEK
-import com.nc.calendar.Constants.DEBOUNCE_DELAY
-import com.nc.calendar.Constants.NO_DATA
-import com.nc.calendar.domain.WeatherRepository
-import com.nc.calendar.domain.model.Result
-import com.nc.calendar.domain.model.WeatherModel
+import com.nc.calendar.R
 import com.nc.calendar.data.helper.CalendarHelper
+import com.nc.calendar.domain.WeatherRepository
+import com.nc.calendar.presentation.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -27,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     init {
         observeDateChanges()
@@ -52,20 +53,23 @@ class CalendarViewModel @Inject constructor(
     private fun observeDateChanges() {
         viewModelScope.launch {
             _lastSelectedDay
-                .debounce(DEBOUNCE_DELAY)
-                .distinctUntilChanged()
                 .flatMapLatest { date ->
-                    flow {
-                        if (date.isInDateRange(today)) {
-                            when (val response = repository.getWeatherByDate(date, today)) {
-                                is Result.Success<*> -> emit(WeatherState.Loaded(response.data as WeatherModel))
-                                is Result.Error -> emit(WeatherState.Error(response.message))
-                            }
-                        } else {
-                            emit(WeatherState.Error(NO_DATA))
-                        }
+                    delay(Constants.DEBOUNCE_DELAY)
+                    if (date.isInDateRange(today)) {
+                        repository.getWeatherByDate(date, today)
+                            .map { result ->
+                                result.fold(
+                                    onSuccess = { value -> WeatherState.Loaded(value) },
+                                    onFailure = { ex ->
+                                        WeatherState.Error(
+                                            ex.message ?: context.getString(R.string.unknown_error)
+                                        )
+                                    }
+                                )
+                            }.onStart { emit(WeatherState.Loading) }
+                    } else {
+                        flowOf(WeatherState.Error(context.getString(R.string.no_data)))
                     }
-                        .onStart { emit(WeatherState.Loading) }
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { state ->
@@ -92,7 +96,7 @@ class CalendarViewModel @Inject constructor(
             return if (index == NO_SELECTED_DAY) {
                 LIST_START
             } else {
-                index / DAYS_IN_WEEK
+                index / Constants.DAYS_IN_WEEK
             }
         }
     }

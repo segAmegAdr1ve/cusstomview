@@ -1,43 +1,49 @@
 package com.nc.calendar.data.repository
 
+import android.content.Context
 import com.nc.calendar.Constants.API_FORWARD_WEEKS_DETAIL_RESTRICTION
-import com.nc.calendar.Constants.NO_INTERNET
-import com.nc.calendar.Constants.UNKNOWN_ERROR
-import com.nc.calendar.data.WeatherApi
+import com.nc.calendar.R
 import com.nc.calendar.data.model.hourly.toWeatherModel
+import com.nc.calendar.data.network.NoInternetException
+import com.nc.calendar.data.network.WeatherApi
 import com.nc.calendar.domain.WeatherRepository
-import com.nc.calendar.domain.model.Result
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
+import com.nc.calendar.domain.model.WeatherModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val weatherApi: WeatherApi
+    private val weatherApi: WeatherApi,
+    @ApplicationContext private val context: Context
 ) : WeatherRepository {
 
-    override suspend fun getWeatherByDate(date: LocalDate, today: LocalDate): Result =
-        withContext(Dispatchers.IO) {
-            val formattedDate = date.format(ISO_LOCAL_DATE)
-            try {
-                val response = if (date.isBefore(today)) {
-                    weatherApi.getHistoryWeatherByDate(formattedDate)
-                } else if (date.isBefore(today.plusWeeks(API_FORWARD_WEEKS_DETAIL_RESTRICTION))) {
-                    weatherApi.getTodayAndFutureWeatherByDate(formattedDate)
-                } else {
-                    weatherApi.getFutureWeatherByDate(formattedDate)
-                }
-                return@withContext if (response.isSuccessful) {
-                    Result.Success(response.body()?.toWeatherModel())
-                } else {
-                    Result.Error(UNKNOWN_ERROR)
-                }
-            } catch (e: UnknownHostException) {
-                return@withContext Result.Error(NO_INTERNET)
-            } catch (e: Exception) {
-                return@withContext Result.Error(e.message ?: UNKNOWN_ERROR)
+    override suspend fun getWeatherByDate(
+        date: LocalDate,
+        today: LocalDate
+    ): Flow<Result<WeatherModel>> = flow {
+        val formattedDate = date.format(ISO_LOCAL_DATE)
+        val response = when {
+            date.isBefore(today) -> {
+                weatherApi.getHistoryWeatherByDate(formattedDate)
+            }
+
+            date.isBefore(today.plusWeeks(API_FORWARD_WEEKS_DETAIL_RESTRICTION)) -> {
+                weatherApi.getTodayAndFutureWeatherByDate(formattedDate)
+            }
+
+            else -> {
+                weatherApi.getFutureWeatherByDate(formattedDate)
             }
         }
+        emit(Result.success(response.toWeatherModel()))
+    }.catch { e ->
+        when (e) {
+            is NoInternetException -> emit(Result.failure(Exception(context.getString(R.string.no_internet))))
+            is Exception -> emit(Result.failure(Exception(context.getString(R.string.unknown_error))))
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.nc.calendar
+package com.nc.calendar.presentation.calendar
 
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -15,6 +15,7 @@ import com.nc.calendar.Constants.DAY_FORMAT_PATTERN
 import com.nc.calendar.Constants.NOMINATIVE_MONTH_FORMAT_PATTERN
 import com.nc.calendar.Constants.YEAR_FORMAT_PATTERN
 import com.nc.calendar.Constants.locale
+import com.nc.calendar.R
 import com.nc.calendar.databinding.FragmentDatePickerBottomSheetBinding
 import com.nc.calendar.databinding.MonthChipBinding
 import kotlinx.coroutines.flow.MutableStateFlow

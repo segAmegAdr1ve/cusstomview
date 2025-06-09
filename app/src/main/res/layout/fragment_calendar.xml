@@ -4,15 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarFragment">
-
-    <!--<ImageView
-        android:id="@+id/imagev"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@color/material_dynamic_primary60"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
+    tools:context=".presentation.calendar.CalendarFragment">
 
     <LinearLayout
         android:id="@+id/current_date"
@@ -77,10 +69,10 @@
         android:layout_height="@dimen/medium_icon_size"
         android:layout_marginEnd="@dimen/medium_space2"
         android:background="@drawable/rounded_ripple"
-        android:radius="10dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/extra_small_space"
+        android:radius="10dp"
         app:layout_constraintBottom_toTopOf="@id/recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">

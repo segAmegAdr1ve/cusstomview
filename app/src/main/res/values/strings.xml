@@ -4,4 +4,7 @@
     <string name="month_picker_title">Выберите месяц</string>
     <string name="select_button_text">Выбрать</string>
     <string name="cancel_button_text">Отмена</string>
+    <string name="no_data">Нет данных</string>
+    <string name="no_internet">Нет интернета</string>
+    <string name="unknown_error">unknown error</string>
 </resources>

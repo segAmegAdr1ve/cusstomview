@@ -1,10 +1,11 @@
-package com.nc.calendar
+package com.nc.calendar.presentation
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.nc.calendar.R
 import com.nc.calendar.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
