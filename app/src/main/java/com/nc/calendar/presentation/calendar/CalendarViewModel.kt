@@ -57,9 +57,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getWeatherByDate(date: LocalDate) {
-        lastRequest?.let { request ->
-            if (request.isActive) request.cancel()
-        }
+        lastRequest?.cancel()
         lastRequest = viewModelScope.launch {
             if (date.isInDateRange(today)) {
                 _weatherState.value = WeatherState.Loading
