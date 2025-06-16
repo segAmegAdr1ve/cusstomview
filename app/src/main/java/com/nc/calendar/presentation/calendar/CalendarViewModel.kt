@@ -4,23 +4,21 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nc.calendar.Constants
-import com.nc.calendar.Constants.API_BACK_DAYS_RESTRICTION
-import com.nc.calendar.Constants.API_FORWARD_DAYS_RESTRICTION
 import com.nc.calendar.R
 import com.nc.calendar.data.helper.CalendarHelper
+import com.nc.calendar.data.network.NoInternetException
 import com.nc.calendar.domain.WeatherRepository
 import com.nc.calendar.presentation.WeatherState
+import com.nc.calendar.presentation.calendar.CalendarViewModel.Companion.API_BACK_DAYS_RESTRICTION
+import com.nc.calendar.presentation.calendar.CalendarViewModel.Companion.API_FORWARD_DAYS_RESTRICTION
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -30,9 +28,6 @@ class CalendarViewModel @Inject constructor(
     private val repository: WeatherRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    init {
-        observeDateChanges()
-    }
 
     private val calendarHelper = CalendarHelper()
     val today: LocalDate = LocalDate.now()
@@ -50,33 +45,7 @@ class CalendarViewModel @Inject constructor(
         MutableStateFlow(WeatherState.Loading)
     val weatherState = _weatherState.asStateFlow()
 
-    private fun observeDateChanges() {
-        viewModelScope.launch {
-            _lastSelectedDay
-                .flatMapLatest { date ->
-                    delay(Constants.DEBOUNCE_DELAY)
-                    if (date.isInDateRange(today)) {
-                        repository.getWeatherByDate(date, today)
-                            .map { result ->
-                                result.fold(
-                                    onSuccess = { value -> WeatherState.Loaded(value) },
-                                    onFailure = { ex ->
-                                        WeatherState.Error(
-                                            ex.message ?: context.getString(R.string.unknown_error)
-                                        )
-                                    }
-                                )
-                            }.onStart { emit(WeatherState.Loading) }
-                    } else {
-                        flowOf(WeatherState.Error(context.getString(R.string.no_data)))
-                    }
-                }
-                .flowOn(Dispatchers.IO)
-                .collect { state ->
-                    _weatherState.value = state
-                }
-        }
-    }
+    private var lastRequest: Job? = null
 
     fun onSelectedDateChanged(newDate: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -87,8 +56,39 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    private fun getWeatherByDate(date: LocalDate) {
+        lastRequest?.let { request ->
+            if (request.isActive) request.cancel()
+        }
+        lastRequest = viewModelScope.launch {
+            if (date.isInDateRange(today)) {
+                _weatherState.value = WeatherState.Loading
+                delay(DEBOUNCE_DELAY)
+                runCatching {
+                    repository.getWeatherByDate(date, today)
+                }.onSuccess { data ->
+                    _weatherState.value = WeatherState.Loaded(data)
+                }.onFailure { e ->
+                    when (e) {
+                        is CancellationException -> throw e
+                        is NoInternetException -> _weatherState.value =
+                            WeatherState.Error(context.getString(R.string.no_internet))
+
+                        else -> _weatherState.value =
+                            WeatherState.Error(context.getString(R.string.unknown_error))
+                    }
+                }
+            } else {
+                _weatherState.value = WeatherState.Error(context.getString(R.string.no_data))
+            }
+        }
+    }
+
     fun setLastSelectedDay(day: LocalDate) {
-        _lastSelectedDay.value = day
+        if (_lastSelectedDay.value != day) {
+            _lastSelectedDay.value = day
+            getWeatherByDate(day)
+        }
     }
 
     fun calculatePositionToScroll(): Int {
@@ -108,6 +108,9 @@ class CalendarViewModel @Inject constructor(
     companion object {
         const val NO_SELECTED_DAY = -1
         const val LIST_START = 0
+        const val DEBOUNCE_DELAY = 350L
+        const val API_FORWARD_DAYS_RESTRICTION = 300L
+        const val API_BACK_DAYS_RESTRICTION = 7L
     }
 }
 

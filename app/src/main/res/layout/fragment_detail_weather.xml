@@ -4,22 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0abab5">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="@dimen/match_constraints"
-        android:layout_height="wrap_content"
-        android:background="#9cf1f0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:navigationIconTint="@color/md_theme_on_tifani_weather"
-        app:titleCentered="true"
-        app:titleTextAppearance="@style/TextAppearance.MdcTypographyStyles.DisplayMedium"
-        app:titleTextColor="@color/md_theme_on_tifani_weather"
-        tools:title="Среда" />
+    android:background="@color/cian">
 
     <ImageView
         android:id="@+id/image"
@@ -28,7 +13,7 @@
         android:scaleX="1.5"
         android:scaleY="1.5"
         app:layout_constraintBottom_toTopOf="@id/humidity"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="@string/image_dimension_ration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -99,10 +84,9 @@
         android:id="@+id/weather_card"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:visibility="visible"
-        app:cardCornerRadius="32dp"
+        android:layout_marginHorizontal="@dimen/medium_small_space"
+        android:layout_marginBottom="@dimen/medium_small_space"
+        app:cardCornerRadius="@dimen/large_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -124,7 +108,7 @@
         android:id="@+id/info_layout"
         android:layout_width="@dimen/match_constraints"
         android:layout_height="@dimen/match_constraints"
-        android:background="#0abab5"
+        android:background="@color/cian"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -147,5 +131,20 @@
             android:textColor="?attr/colorOnPrimary"
             tools:text="ошибка" />
     </FrameLayout>
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="@dimen/match_constraints"
+        android:layout_height="wrap_content"
+        android:background="#9cf1f0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/md_theme_on_tifani_weather"
+        app:titleCentered="true"
+        app:titleTextAppearance="@style/TextAppearance.MdcTypographyStyles.DisplayMedium"
+        app:titleTextColor="@color/md_theme_on_tifani_weather"
+        tools:title="Среда" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

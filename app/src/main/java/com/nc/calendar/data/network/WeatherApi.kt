@@ -1,10 +1,5 @@
 package com.nc.calendar.data.network
 
-import com.nc.calendar.Constants.DATE_PARAM
-import com.nc.calendar.Constants.DAYS_PARAM
-import com.nc.calendar.Constants.DAYS_PER_REQUEST
-import com.nc.calendar.Constants.DETAIL_WEATHER_INTERVAL
-import com.nc.calendar.Constants.INTERVAL_PARAM
 import com.nc.calendar.data.model.HourlyWeatherModel
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,4 +23,11 @@ interface WeatherApi {
         @Query(DATE_PARAM) date: String,
     ): HourlyWeatherModel
 
+    companion object {
+        const val DATE_PARAM = "dt"
+        const val INTERVAL_PARAM = "tp"
+        const val DAYS_PARAM = "days"
+        const val DAYS_PER_REQUEST = "1"
+        const val DETAIL_WEATHER_INTERVAL = "60"
+    }
 }

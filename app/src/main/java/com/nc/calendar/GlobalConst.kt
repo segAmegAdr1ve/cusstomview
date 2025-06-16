@@ -18,16 +18,5 @@ object Constants {
     const val M_PER_SECOND_FORMAT_PATTERN = "%d м/с"
     const val PERCENT_FORMAT_PATTERN = "%d%%"
     const val PROTOCOL = "https:"
-    const val DETAIL_WEATHER_INTERVAL = "60"
-    const val DAYS_PER_REQUEST = "1"
-    const val CITY_PARAM = "q"
-    const val API_KEY_PARAM = "key"
-    const val DATE_PARAM = "dt"
-    const val DAYS_PARAM = "days"
-    const val INTERVAL_PARAM = "tp"
-    const val API_FORWARD_DAYS_RESTRICTION = 300L
-    const val API_FORWARD_WEEKS_DETAIL_RESTRICTION = 2L
-    const val API_BACK_DAYS_RESTRICTION = 7L
-    const val DEBOUNCE_DELAY = 350L
     val locale: Locale by lazy { Locale.getDefault() }
 }

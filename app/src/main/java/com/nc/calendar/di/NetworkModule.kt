@@ -3,8 +3,6 @@ package com.nc.calendar.di
 import android.content.Context
 import android.net.ConnectivityManager
 import com.nc.calendar.BuildConfig
-import com.nc.calendar.Constants.API_KEY_PARAM
-import com.nc.calendar.Constants.CITY_PARAM
 import com.nc.calendar.data.network.NoInternetException
 import com.nc.calendar.data.network.WeatherApi
 import dagger.Module
@@ -95,6 +93,8 @@ class NetworkModule {
     companion object {
         const val BASE_URL = "https://api.weatherapi.com/v1/"
         const val CITY = "Ulyanovsk"
+        const val CITY_PARAM = "q"
+        const val API_KEY_PARAM = "key"
     }
 }
 

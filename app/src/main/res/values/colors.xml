@@ -1,4 +1,5 @@
 <resources>
+    <color name="cian">#0abab5</color>
     <color name="md_theme_tifani_weather">#4D0ABAB5</color>
     <color name="md_theme_on_tifani_weather">#00504f</color>
     <color name="md_theme_primary">#196B52</color>

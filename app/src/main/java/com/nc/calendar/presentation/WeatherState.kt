@@ -3,7 +3,7 @@ package com.nc.calendar.presentation
 import com.nc.calendar.domain.model.WeatherModel
 
 sealed interface WeatherState {
-    object Loading : WeatherState
-    data class Loaded(val data: WeatherModel) : WeatherState
-    data class Error(val message: String) : WeatherState
+    data object Loading : WeatherState
+    class Loaded(val data: WeatherModel) : WeatherState
+    class Error(val message: String) : WeatherState
 }

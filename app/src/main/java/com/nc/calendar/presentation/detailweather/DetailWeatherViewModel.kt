@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nc.calendar.R
+import com.nc.calendar.data.network.NoInternetException
 import com.nc.calendar.domain.WeatherRepository
 import com.nc.calendar.presentation.WeatherState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,16 +28,13 @@ class DetailWeatherViewModel @Inject constructor(
 
     fun getWeatherByDate(date: LocalDate) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getWeatherByDate(date, today)
-                .collect { result ->
-                    result.fold(
-                        onSuccess = { value -> _weatherState.value = WeatherState.Loaded(value) },
-                        onFailure = { ex ->
-                            _weatherState.value = WeatherState.Error(
-                                ex.message ?: context.getString(R.string.unknown_error)
-                            )
-                        }
-                    )
+            runCatching { repository.getWeatherByDate(date, today) }
+                .onSuccess { value -> _weatherState.value = WeatherState.Loaded(value) }
+                .onFailure { ex ->
+                    _weatherState.value = when (ex) {
+                        is NoInternetException -> WeatherState.Error(context.getString(R.string.no_internet))
+                        else -> WeatherState.Error(context.getString(R.string.unknown_error))
+                    }
                 }
         }
     }

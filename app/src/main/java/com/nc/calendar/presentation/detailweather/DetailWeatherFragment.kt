@@ -56,7 +56,7 @@ class DetailWeatherFragment : Fragment() {
                 with(binding) {
                     when (state) {
                         is WeatherState.Error -> {
-                            toolbar.visibility = View.INVISIBLE
+                            toolbar.visibility = View.VISIBLE
                             weatherCard.visibility = View.INVISIBLE
                             infoLayout.visibility = View.VISIBLE
                             errorTextField.text = state.message

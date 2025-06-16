@@ -27,6 +27,8 @@ import com.nc.calendar.presentation.detailweather.DetailWeatherFragment.Companio
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @AndroidEntryPoint
 class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
@@ -57,8 +59,8 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         }
     }
 
-    private fun setupWeather() {
-        binding.weatherLayout.setOnClickListener {
+    private fun setupWeather() = with(binding) {
+        weatherLayout.setOnClickListener {
             val weatherState = viewModel.weatherState.value as? WeatherState.Loaded
             if (weatherState != null) {
                 val bundle = Bundle().apply {
@@ -74,31 +76,29 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
 
         lifecycleScope.launch {
             viewModel.weatherState.collect { state ->
-                with(binding) {
-                    when (state) {
-                        is WeatherState.Loading -> {
-                            progressIndicator.visibility = View.VISIBLE
-                            currentTemperature.visibility = View.GONE
-                            weatherDate.visibility = View.GONE
-                            weatherLayout.isClickable = false
-                        }
+                when (state) {
+                    is WeatherState.Loading -> {
+                        progressIndicator.visibility = View.VISIBLE
+                        currentTemperature.visibility = View.GONE
+                        weatherDate.visibility = View.GONE
+                        weatherLayout.isClickable = false
+                    }
 
-                        is WeatherState.Loaded -> {
-                            progressIndicator.visibility = View.GONE
-                            currentTemperature.visibility = View.VISIBLE
-                            weatherDate.visibility = View.VISIBLE
-                            currentTemperature.text = state.data.midTemp.formatTemp()
-                            weatherDate.text = state.data.date.formatWeatherDate()
-                            weatherLayout.isClickable = true
-                        }
+                    is WeatherState.Loaded -> {
+                        progressIndicator.visibility = View.GONE
+                        currentTemperature.visibility = View.VISIBLE
+                        weatherDate.visibility = View.VISIBLE
+                        currentTemperature.text = state.data.midTemp.formatTemp()
+                        weatherDate.text = state.data.date.formatWeatherDate()
+                        weatherLayout.isClickable = true
+                    }
 
-                        is WeatherState.Error -> {
-                            progressIndicator.visibility = View.GONE
-                            weatherDate.visibility = View.GONE
-                            currentTemperature.visibility = View.VISIBLE
-                            currentTemperature.text = state.message
-                            weatherLayout.isClickable = false
-                        }
+                    is WeatherState.Error -> {
+                        progressIndicator.visibility = View.GONE
+                        weatherDate.visibility = View.GONE
+                        currentTemperature.visibility = View.VISIBLE
+                        currentTemperature.text = state.message
+                        weatherLayout.isClickable = false
                     }
                 }
 
@@ -112,7 +112,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
         lifecycleScope.launch {
             viewModel.lastSelectedDay.collect { day ->
                 calendarAdapter.setLastSelectedDay(day)
-                //dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
+                dayTimelineView.selectedDateTime = LocalDateTime.of(day, LocalTime.now())
             }
         }
 
