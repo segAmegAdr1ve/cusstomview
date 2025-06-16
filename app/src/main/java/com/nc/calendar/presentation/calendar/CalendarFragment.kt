@@ -1,23 +1,36 @@
-package com.nc.calendar
+package com.nc.calendar.presentation.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.nc.calendar.Constants.today
-import com.nc.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
+import com.nc.calendar.R
 import com.nc.calendar.databinding.FragmentCalendarBinding
+import com.nc.calendar.format
+import com.nc.calendar.formatDay
+import com.nc.calendar.formatShort
+import com.nc.calendar.formatTemp
+import com.nc.calendar.formatWeatherDate
+import com.nc.calendar.formatYear
+import com.nc.calendar.presentation.WeatherState
+import com.nc.calendar.presentation.calendar.DatePickerBottomSheetFragment.Companion.DIALOG_RESULT_KEY
+import com.nc.calendar.presentation.detailweather.DetailWeatherFragment
+import com.nc.calendar.presentation.detailweather.DetailWeatherFragment.Companion.DATE_ARG_KEY
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+@AndroidEntryPoint
 class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     private val viewModel: CalendarViewModel by viewModels()
     private val calendarAdapter by lazy { CalendarRecyclerViewAdapter(this) }
@@ -36,12 +49,60 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupCurrentDateField()
+        setupWeather()
 
         setFragmentResultListener(DatePickerBottomSheetFragment.DIALOG_REQUEST_KEY) { _, bundle ->
             val result = bundle.getLong(DIALOG_RESULT_KEY)
             val date = LocalDate.ofEpochDay(result)
             viewModel.onSelectedDateChanged(date)
             calendarAdapter.clearVisibleSelectedDay()
+        }
+    }
+
+    private fun setupWeather() = with(binding) {
+        weatherLayout.setOnClickListener {
+            val weatherState = viewModel.weatherState.value as? WeatherState.Loaded
+            if (weatherState != null) {
+                val bundle = Bundle().apply {
+                    putLong(DATE_ARG_KEY, weatherState.data.date.toEpochDay())
+                }
+                parentFragmentManager.commit {
+                    add<DetailWeatherFragment>(R.id.fragment_container_view, args = bundle)
+                    addToBackStack(null)
+                }
+            }
+
+        }
+
+        lifecycleScope.launch {
+            viewModel.weatherState.collect { state ->
+                when (state) {
+                    is WeatherState.Loading -> {
+                        progressIndicator.visibility = View.VISIBLE
+                        currentTemperature.visibility = View.GONE
+                        weatherDate.visibility = View.GONE
+                        weatherLayout.isClickable = false
+                    }
+
+                    is WeatherState.Loaded -> {
+                        progressIndicator.visibility = View.GONE
+                        currentTemperature.visibility = View.VISIBLE
+                        weatherDate.visibility = View.VISIBLE
+                        currentTemperature.text = state.data.midTemp.formatTemp()
+                        weatherDate.text = state.data.date.formatWeatherDate()
+                        weatherLayout.isClickable = true
+                    }
+
+                    is WeatherState.Error -> {
+                        progressIndicator.visibility = View.GONE
+                        weatherDate.visibility = View.GONE
+                        currentTemperature.visibility = View.VISIBLE
+                        currentTemperature.text = state.message
+                        weatherLayout.isClickable = false
+                    }
+                }
+
+            }
         }
     }
 
@@ -78,7 +139,7 @@ class CalendarFragment : Fragment(), CalendarRecyclerViewAdapter.Listener {
 
         lifecycleScope.launch {
             viewModel.selectedDate.collect { date ->
-                if (date.year == today.year) {
+                if (date.year == viewModel.today.year) {
                     month.text = date.month.format()
                     year.text = getString(R.string.empty)
                 } else {

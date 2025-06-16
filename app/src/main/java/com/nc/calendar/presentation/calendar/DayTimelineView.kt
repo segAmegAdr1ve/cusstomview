@@ -1,4 +1,4 @@
-package com.nc.calendar
+package com.nc.calendar.presentation.calendar
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.nc.calendar.Constants.TIME_FORMAT_PATTERN
 import com.nc.calendar.Constants.locale
+import com.nc.calendar.R
 import java.time.LocalDateTime
 
 class DayTimelineView @JvmOverloads constructor(

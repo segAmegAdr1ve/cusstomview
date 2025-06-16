@@ -1,4 +1,4 @@
-package com.nc.calendar
+package com.nc.calendar.presentation.calendar
 
 import android.view.LayoutInflater
 import android.view.View

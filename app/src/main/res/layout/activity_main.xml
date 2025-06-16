@@ -4,11 +4,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".presentation.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
-        android:name="com.nc.calendar.CalendarFragment"
+        android:name="com.nc.calendar.presentation.calendar.CalendarFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
